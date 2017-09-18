@@ -1,0 +1,17 @@
+# Translation by Xanthin
+
+### nodes_anvil.lua ###
+Steel hammer for repairing tools on the anvil = Stahlhammer um Werkzeuge auf dem Amboss zu reparieren
+anvil = Amboss
+Anvil = Amboss
+The workpiece slot is for damaged tools only. = Das Werkstueckfeld gilt nur fuer beschaedigtes Werkzeug.
+Your tool has been repaired successfully. = Dein Werkzeug wurde erfolgreich repariert.
+Your workpiece improves. = Dein Werkstueck verbessert sich.
+Anvil (owned by %s) = Amboss (gehoert %s)
+Workpiece: = Werkstueck
+Optional = Moegliche
+storage for = Aufbewahrung fuer
+your hammer = deinen Hammer
+Owner: %s = Besitzer: %s
+Punch anvil with hammer to = Schlage mit dem Hammer auf den Amboss um
+repair tool in workpiece-slot. = das Werkzeug im Werkstueckfeld zu reparieren. 

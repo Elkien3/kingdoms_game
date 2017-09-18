@@ -1,0 +1,31 @@
+--- ./crossbow_orig.lua	2015-02-19 13:37:51.000000000 -0600
++++ ./crossbow.lua	2016-04-28 17:52:18.847271250 -0500
+@@ -236,6 +236,7 @@
+ 	description = "Crossbow",
+ 	inventory_image = "shooter_crossbow.png",
+ 	on_use = function(itemstack, user, pointed_thing)
++        minetest.after(2, function()
+ 		local inv = user:get_inventory()
+ 		local stack = inv:get_stack("main", user:get_wield_index() + 1)
+ 		local color = string.match(stack:get_name(), "shooter:arrow_(%a+)")
+@@ -256,16 +257,18 @@
+ 			end
+ 		end
+ 		minetest.sound_play("shooter_click", {object=user})
++end)
+ 	end,
+ })
+ 
++
+ if SHOOTER_ENABLE_CRAFTING == true then
+ 	minetest.register_craft({
+ 		output = "shooter:crossbow",
+ 		recipe = {
+ 			{"default:stick", "default:stick", "default:stick"},
+-			{"default:stick", "default:stick", ""},
+-			{"default:stick", "", "default:bronze_ingot"},
++			{"default:stick", "group:wool", ""},
++			{"default:stick", "", "default:stick"},
+ 		},
+ 	})
+ 	minetest.register_craft({
