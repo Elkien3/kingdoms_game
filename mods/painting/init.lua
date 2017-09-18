@@ -21,16 +21,16 @@ local hexcols = {
 	violet = "8a00ff", blue = "000cff",
 	green = "0cff00", magenta = "fc00ff",
 	cyan = "00ffea", grey = "bebebe",
-	dark_grey = "7b7b7b", black = "000000",
-	dark_green = "006400", brown="964b00",
+	darkgrey = "7b7b7b", black = "000000",
+	darkgreen = "006400", brown="964b00",
 	pink = "ffc0cb"
 }
 
 local colors = {}
 
 local revcolors = {
-	"white", "dark_green", "grey", "red", "brown", "cyan", "orange", "violet",
-	"dark_grey", "pink", "green", "magenta", "yellow", "black", "blue"
+	"white", "darkgreen", "grey", "red", "brown", "cyan", "orange", "violet",
+	"darkgrey", "pink", "green", "magenta", "yellow", "black", "blue"
 }
 
 local thickness = 0.1
@@ -235,6 +235,7 @@ minetest.register_entity("painting:paintent", {
 	on_punch = function(self, puncher)
 		--check for brush.
 		local name = string.match(puncher:get_wielded_item():get_name(), "_([^_]*)")
+		--print(name)
 		if not colors[name] then	-- Not one of the brushes; can't paint.
 			return
 		end
@@ -472,8 +473,8 @@ local textures = {
 	violet = "violet.png", blue = "blue.png",
 	green = "green.png", magenta = "magenta.png",
 	cyan = "cyan.png", grey = "grey.png",
-	dark_grey = "darkgrey.png", black = "black.png",
-	dark_green = "darkgreen.png", brown="brown.png",
+	darkgrey = "darkgrey.png", black = "black.png",
+	darkgreen = "darkgreen.png", brown="brown.png",
 	pink = "pink.png"
 }
 
