@@ -145,7 +145,35 @@ minetest.register_node("painting:pic", {
 			count = 1,
 			metadata = get_metastring(data)
 		})
-	end
+	end,	
+	--copy pictures
+	on_punch = function(pos, node, player, pointed_thing)
+		local meta = minetest.get_meta(pos):to_table()
+		if meta == nil then return end
+		
+		local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
+		--compare resulutions of picture and canvas the player wields
+		--if it isn't the same don't copy
+		data_res = minetest.deserialize(minetest.decompress(data)).res
+		wname = player:get_wielded_item():get_name()
+		local res = tonumber(string.sub(wname, #"painting:canvas_"+1))
+		if res == nil or data_res == nil then return end
+		if res ~= data_res then
+			minetest.chat_send_player(player:get_player_name(), 
+				"not same canvas type!")
+			return
+		end
+		--remove canvas, add picture
+		player:get_inventory():remove_item("main", {
+			name = wname, 
+			count = 1,
+		})
+		player:get_inventory():add_item("main", {
+			name = "painting:paintedcanvas",
+			count = 1,
+			metadata = get_metastring(data)
+		})
+	end	
 })
 
 -- picture texture entity
