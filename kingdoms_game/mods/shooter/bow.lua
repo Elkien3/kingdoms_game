@@ -167,6 +167,10 @@ minetest.register_entity("shooter:arrow_entity", {
 })
 
 for _, color in pairs(dye_basecolors) do
+	minetest.register_craftitem("shooter:arrow_"..color, {
+		description = color:gsub("%a", string.upper, 1).." Arrow",
+		inventory_image = get_texture("arrow_inv", color),
+	})
 	minetest.register_tool("shooter:bow_loaded_"..color, {
 		description = "Bow",
 		inventory_image = get_texture("bow_loaded", color),
@@ -264,4 +268,22 @@ if SHOOTER_ENABLE_CRAFTING == true then
 			{"", "default:stick", "farming:cotton"},
 		},
 	})
+	minetest.register_craft({
+		output = "shooter:arrow_white",
+		recipe = {
+			{"default:steel_ingot", "", ""},
+			{"", "default:stick", "default:paper"},
+			{"", "default:paper", "default:stick"},
+		},
+	})
+	for _, color in pairs(dye_basecolors) do
+		if color ~= "white" then
+			minetest.register_craft({
+                            type = "shapeless",
+				output = "shooter:arrow_"..color,
+				recipe = {"dye:"..color, "shooter:arrow_white"},
+			})
+		end
+	end
 end
+

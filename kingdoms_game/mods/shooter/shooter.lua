@@ -39,11 +39,6 @@ SHOOTER_ENTITIES = {
 	"mobs:rat",
 	"mobs:oerkki",
 	"mobs:dungeon_master",
-	"creatures:sheep",
-	"creatures:chicken",
-	"whinny:horse",
-	"whinny:horsepeg",
-	"whinny:horseara"
 }
 
 local singleplayer = minetest.is_singleplayer()
