@@ -234,8 +234,9 @@ minetest.register_entity("painting:paintent", {
 
 	on_punch = function(self, puncher)
 		--check for brush.
-		local name = string.match(puncher:get_wielded_item():get_name(), "_([^_]*)")
+		local name = string.sub(puncher:get_wielded_item():get_name(), #"painting:brush_"+1)
 		if not colors[name] then	-- Not one of the brushes; can't paint.
+		minetest.chat_send_all(name)
 			return
 		end
 
