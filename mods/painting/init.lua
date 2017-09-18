@@ -507,6 +507,9 @@ minetest.register_alias("canvas", "painting:canvas_16")
 
 -- fixes the colours which were set by pairs
 local function fix_eldest_grid(data)
+	if data == nil then
+		return
+	end
 	for y in pairs(data) do
 		local xs = data[y]
 		for x in pairs(xs) do
