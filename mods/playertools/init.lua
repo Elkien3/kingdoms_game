@@ -196,3 +196,68 @@ minetest.register_chatcommand("pulverizeall", {
 	end,
 })
 
+minetest.register_chatcommand("grief_check", {
+	params = "[<range>] [<hours>] [<limit>]",
+	description = "Check who last touched a node or a node near it"
+			.. " within the time specified by <hours>. Default: range = 0,"
+			.. " hours = 24 = 1d, limit = 5",
+	privs = {interact=true},
+	func = function(name, param)
+		if not minetest.settings:get_bool("enable_rollback_recording") then
+			return false, "Rollback functions are disabled."
+		end
+		local range, hours, limit =
+			param:match("(%d+) *(%d*) *(%d*)")
+		range = tonumber(range) or 0
+		hours = tonumber(hours) or 24
+		limit = tonumber(limit) or 5
+		if range > 10 then
+			return false, "That range is too high! (max 10)"
+		end
+		if hours > 168 then
+			return false, "That time limit is too high! (max 168: 7 days)"
+		end
+		if limit > 100 then
+			return false, "That limit is too high! (max 100)"
+		end
+		local seconds = (hours*60)*60
+		minetest.rollback_punch_callbacks[name] = function(pos, node, puncher)
+			local name = puncher:get_player_name()
+			if ctf.get_territory_owner(pos) then
+				if minetest.is_protected(pos, name) then
+					return
+				end
+			else
+				minetest.chat_send_player(name, "You can only check on an owned area.")
+				return
+			end
+			minetest.chat_send_player(name, "Checking " .. minetest.pos_to_string(pos) .. "...")
+			local actions = minetest.rollback_get_node_actions(pos, range, seconds, limit)			
+			if not actions then
+				minetest.chat_send_player(name, "Rollback functions are disabled")
+				return
+			end
+			local num_actions = #actions
+			if num_actions == 0 then
+				minetest.chat_send_player(name, "Nobody has touched"
+						.. " the specified location in " .. hours .. " hour(s)")
+				return
+			end
+			local time = os.time()
+			for i = num_actions, 1, -1 do
+				local action = actions[i]
+				minetest.chat_send_player(name,
+					("%s %s %s -> %s %d seconds ago.")
+						:format(
+							minetest.pos_to_string(action.pos),
+							action.actor,
+							action.oldnode.name,
+							action.newnode.name,
+							time - action.time))
+			end
+		end
+
+		return true, "Punch a node (range=" .. range .. ", hours="
+				.. hours .. "s, limit=" .. limit .. ")"
+	end,
+})
