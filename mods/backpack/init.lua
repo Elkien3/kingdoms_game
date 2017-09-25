@@ -98,39 +98,32 @@ local function cleanInventory()
 end
 minetest.after(CLEANUP_PERIOD__S, cleanInventory)
 
-minetest.register_on_leaveplayer(function(player)
+dropbackpack = function(player)
 	local name = player:get_player_name()
 	if player_backpack[name] then
 		local pos = player:getpos()
+		local pack = player_backpack[name]
+		local obj = pack.object
 		pos.y = pos.y + 0.4
-		player_backpack[name]:set_detach()
-		player_backpack[name]:setpos(pos)
+		pack.owner = nil
+		obj:set_detach()
+		obj:setpos(pos)
 		player_backpack[name] = nil
 	end
+end
+
+minetest.register_on_leaveplayer(function(player)
+	dropbackpack(player)
 end)
 minetest.register_on_joinplayer(function(player)
 	inventory_plus.register_button(player,"backpack", "Backpack")
 end)
 minetest.register_on_dieplayer(function(player)
-	local name = player:get_player_name()
-	if player_backpack[name] then
-		local pos = player:getpos()
-		pos.y = pos.y + 0.5
-		player_backpack[name]:set_detach()
-		player_backpack[name]:setpos(pos)
-		player_backpack[name] = nil
-	end
+	dropbackpack(player)
 end)
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 if fields.backpack then
-	local name = player:get_player_name()
-	if player_backpack[name] then
-		local pos = player:getpos()
-		pos.y = pos.y + 0.4
-		player_backpack[name]:set_detach()
-		player_backpack[name]:setpos(pos)
-		player_backpack[name] = nil
-	end
+		dropbackpack(player)
 	end
 end)
 
@@ -245,9 +238,10 @@ minetest.register_entity(
 			end
 		else
 			if player_backpack[name] == nil then
-				--self.object:setpos(puncher:getpos())
 				self.object:set_attach(puncher, "", {x=0,y=0,z=-2.5}, {x=0,y=0,z=0})
-				player_backpack[name] = self.object
+				self.object:setpos(puncher:getpos())
+				player_backpack[name] = self
+				self.owner = puncher
 			end
 		end
 	end,
@@ -286,7 +280,11 @@ minetest.register_entity(
                loop = false
             })
       end,
-
+		on_step = function(self, dt)
+			if self.owner then
+				self.object:setpos(self.owner:getpos())
+			end
+		end
       --[[on_step = function(self, dt)
          self.timer = self.timer - dt
          if self.timer > 0.0 then return end
@@ -453,7 +451,6 @@ minetest.register_tool(
       --    detached proxy that doesn't allow the bag's stack to be changed
       --    while open!
    })
---[[
 minetest.register_craft(
    {
       output = "backpack:backpack",
@@ -464,4 +461,3 @@ minetest.register_craft(
             { "group:wool", "group:wool", "group:wool" },
          }
    })
---]]
