@@ -131,6 +131,8 @@ ctf.gui.register_tab("news", "News", function(name, tname)
 		result)
 end)
 
+local scroll_diplomacy = 0
+local scroll_max = 0
 -- Team interface
 ctf.gui.register_tab("diplo", "Diplomacy", function(name, tname)
 	local result = ""
@@ -150,7 +152,19 @@ ctf.gui.register_tab("diplo", "Diplomacy", function(name, tname)
 	end
 
 	result = result .. "label[1,1;Diplomacy from the perspective of " .. tname .. "]"
-
+	
+	scroll_max = 0
+	for i = 1, #data do
+		scroll_max = i
+		end
+	scroll_max = scroll_max - 5
+	if scroll_diplomacy > 0 then
+		result = result .. "button[9.2,0.44;1,3;scroll_up;Up]"
+		end
+	if scroll_diplomacy <= scroll_max then
+		result = result .. "button[9.2,3.8;1,3;scroll_down;Down]"
+		end
+		
 	for i = 1, #data do
 		amount = i
 		local height = (i*1)+0.5
@@ -159,35 +173,37 @@ ctf.gui.register_tab("diplo", "Diplomacy", function(name, tname)
 			break
 		end
 
+		local L = i + scroll_diplomacy
+		
 		result = result .. "background[1," .. height .. ";8.2,1;diplo_" ..
-				data[i].state .. ".png]"
+				data[L].state .. ".png]"
 		result = result .. "button[1.25," .. height .. ";2,1;team_" ..
-				data[i].team .. ";" .. data[i].team .. "]"
-		result = result .. "label[3.75," .. height .. ";" .. data[i].state
+				data[L].team .. ";" .. data[L].team .. "]"
+		result = result .. "label[3.75," .. height .. ";" .. data[L].state
 				.. "]"
 
 		if ctf.can_mod(name, tname) and ctf.player(name).team == tname then
-			if not data[i].from and not data[i].to then
-				if data[i].state == "war" then
+			if not data[L].from and not data[L].to then
+				if data[L].state == "war" then
 					result = result .. "button[7.5," .. height ..
-							";1.5,1;peace_" .. data[i].team .. ";Peace]"
-				elseif data[i].state == "peace" then
+							";1.5,1;peace_" .. data[L].team .. ";Peace]"
+				elseif data[L].state == "peace" then
 					result = result .. "button[6," .. height ..
-							";1.5,1;war_" .. data[i].team .. ";War]"
+							";1.5,1;war_" .. data[L].team .. ";War]"
 					result = result .. "button[7.5," .. height ..
-							";1.5,1;alli_" .. data[i].team .. ";Alliance]"
-				elseif data[i].state == "alliance" then
+							";1.5,1;alli_" .. data[L].team .. ";Alliance]"
+				elseif data[L].state == "alliance" then
 					result = result .. "button[6," .. height ..
-							";1.5,1;peace_" .. data[i].team .. ";Peace]"
+							";1.5,1;peace_" .. data[L].team .. ";Peace]"
 				end
-			elseif data[i].from ~= nil then
+			elseif data[L].from ~= nil then
 				result = result .. "label[6," .. height ..
 						";request recieved]"
-			elseif data[i].to ~= nil then
+			elseif data[L].to ~= nil then
 				result = result .. "label[5.5," .. height ..
 						";request sent]"
 				result = result .. "button[7.5," .. height ..
-						";1.5,1;cancel_" .. data[i].team .. ";Cancel]"
+						";1.5,1;cancel_" .. data[L].team .. ";Cancel]"
 			end
 		end
 	end
@@ -280,6 +296,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 end)
 
+local cur_team = nil
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local name    = player:get_player_name()
 	local tplayer = ctf.player(name)
@@ -287,13 +304,33 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local team    = ctf.team(tname)
 
 	if not team or formname ~= "ctf:diplo" then
+		cur_team = nil
 		return false
 	end
+	
+	if cur_team == nil then
+		cur_team = tname
+		end
+	if fields.scroll_up then
+		scroll_diplomacy = scroll_diplomacy - 1
+		if scroll_diplomacy < 0 then
+			scroll_diplomacy = 0
+			end
+		ctf.gui.show(name, "diplo", cur_team)
+		end
+	if fields.scroll_down then
+		scroll_diplomacy = scroll_diplomacy + 1
+		if scroll_diplomacy > (scroll_max+5) then
+			scroll_diplomacy = scroll_max
+			end
+		ctf.gui.show(name, "diplo", cur_team)
+		end
 
 	for key, field in pairs(fields) do
 		local tname2 = string.match(key, "team_(.+)")
 		if tname2 and ctf.team(tname2) then
 			ctf.gui.show(name, "diplo", tname2)
+			cur_team = tname2
 			return true
 		end
 
