@@ -428,3 +428,11 @@ if minetest.global_exists("chatplus") then
 		return false
 	end)
 end
+minetest.register_on_joinplayer(function(player)
+	inventory_plus.register_button(player,"ctf", "ctf")
+end)
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+if fields.ctf then
+		ctf.gui.show(player:get_player_name())
+	end
+end)
