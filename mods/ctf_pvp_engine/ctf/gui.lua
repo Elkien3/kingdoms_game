@@ -158,6 +158,11 @@ ctf.gui.register_tab("diplo", "Diplomacy", function(name, tname)
 		scroll_max = i
 		end
 	scroll_max = scroll_max - 5
+	
+	if scroll_diplomacy > (scroll_max+5) then
+		scroll_diplomacy = (scroll_max+5)
+		end
+		
 	if scroll_diplomacy > 0 then
 		result = result .. "button[9.2,0.44;1,3;scroll_up;Up]"
 		end
