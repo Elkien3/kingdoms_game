@@ -999,7 +999,10 @@ minetest.register_craft({
 	recipe = {"xtraarmor:boots_chainmail", "xtraarmor:boots_leather"},
 })
 minetest.register_craft({
-	type = "shapeless",
-	output = "xtraarmor:shield_studded",
-	recipe = {"xtraarmor:shield_chainmail", "xtraarmor:shield_leather"},
+	output = 'xtraarmor:shield_studded',
+	recipe = {
+		{'group:wool', 'group:wool', 'group:wool'},
+		{'group:wool', 'xtraarmor:shield_chainmail', 'group:wool'},
+		{'', 'group:wool', ''},
+	}
 })
