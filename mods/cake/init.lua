@@ -50,7 +50,7 @@ for i, size in ipairs(sizes) do
 		--	clicker:set_hp(clicker:get_hp() + 1)
 			local name = clicker:get_player_name()
 			local h = tonumber(hud.hunger[name])
-			h = h + 4
+			h = h + 2
 			hud.hunger[name] = h
 			hud.set_hunger(clicker)
 			if i < #sizes then
