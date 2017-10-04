@@ -423,7 +423,7 @@ end
 minetest.register_tool(
    "backpack:backpack",
    {
-      description = "Backpack",
+      description = "Backpack (WORK IN PROGRESS, USE AT YOUR OWN RISK)",
       groups = { bag = BAG_WIDTH*BAG_HEIGHT, flammable = 1 },
       inventory_image = "inventory_plus_backpack.png",
       wield_image = "inventory_plus_backpack.png",
@@ -453,7 +453,6 @@ minetest.register_tool(
       --    detached proxy that doesn't allow the bag's stack to be changed
       --    while open!
    })
---[[
 minetest.register_craft(
    {
       output = "backpack:backpack",
@@ -464,4 +463,3 @@ minetest.register_craft(
             { "group:wool", "group:wool", "group:wool" },
          }
    })
---]]
