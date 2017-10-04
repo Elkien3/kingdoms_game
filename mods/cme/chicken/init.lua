@@ -126,12 +126,35 @@ local def = {
     {"creatures:chicken_flesh"},
     {"creatures:feather", {min = 1, max = 2}, chance = 0.45},
   },
+  
+  	on_rightclick = function(self, clicker)
+		local item = clicker:get_wielded_item()
+			if item then
+				local name = item:get_name()
+				if name == "farming:seed_wheat" then
+
+					if not self.tamed then
+						self.fed_cnt = (self.fed_cnt or 0) + 1
+					end
+
+					-- play eat sound?
+					item:take_item()
+					if not core.setting_getbool("creative_mode") then
+						clicker:set_wielded_item(item)
+					end
+				end
+			end
+	end,
 
   on_step = function(self, dtime)
     if self.mode == "lay_egg" then
       dropEgg(self.object)
       self.modetimer = 2
     end
+	if self.fed_cnt and self.fed_cnt > 4 then
+		self.tamed = true
+		self.fed_cnt = nil
+	end
   end
 }
 
