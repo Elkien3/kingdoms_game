@@ -5,15 +5,16 @@
 minetest.register_on_joinplayer(function(player)
 	local name = player:get_player_name()
 	if irc.connected and irc.config.send_join_part then
-		irc:say("*** "..name.." joined the game")
+		irc.say("*** "..name.." joined the game")
 	end
 end)
 
 
-minetest.register_on_leaveplayer(function(player)
+minetest.register_on_leaveplayer(function(player, timed_out)
 	local name = player:get_player_name()
 	if irc.connected and irc.config.send_join_part then
-		irc:say("*** "..name.." left the game")
+		irc.say("*** "..name.." left the game"..
+				(timed_out and " (Timed out)" or ""))
 	end
 end)
 
@@ -30,11 +31,11 @@ minetest.register_on_chat_message(function(name, message)
 	if nl then
 		message = message:sub(1, nl - 1)
 	end
-	irc:say(irc:playerMessage(name, message))
+	irc.say(irc.playerMessage(name, core.strip_colors(message)))
 end)
 
 
 minetest.register_on_shutdown(function()
-	irc:disconnect("Game shutting down.")
+	irc.disconnect("Game shutting down.")
 end)
 
