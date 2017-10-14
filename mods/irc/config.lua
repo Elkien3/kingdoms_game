@@ -32,10 +32,13 @@ setting("string", "server", nil, true) -- Server address to connect to
 setting("number", "port", 6667) -- Server port to connect to
 setting("string", "NSPass") -- NickServ password
 setting("string", "sasl.user", irc.config.nick) -- SASL username
+setting("string", "username", "Minetest") -- Username/ident
+setting("string", "realname", "Minetest") -- Real name/GECOS
 setting("string", "sasl.pass") -- SASL password
 setting("string", "channel", nil, true) -- Channel to join
 setting("string", "key") -- Key for the channel
 setting("bool",   "send_join_part", true) -- Whether to send player join and part messages to the channel
+setting("bool",   "send_kicks", false) -- Whether to send player kicked messages to the channel
 
 -----------------------
 -- ADVANCED SETTINGS --
@@ -44,6 +47,7 @@ setting("bool",   "send_join_part", true) -- Whether to send player join and par
 setting("string", "password") -- Server password
 setting("bool",   "secure", false) -- Enable a TLS connection, requires LuaSEC
 setting("number", "timeout", 60) -- Underlying socket timeout in seconds.
+setting("number", "reconnect", 600) -- Time between reconnection attempts, in seconds.
 setting("string", "command_prefix") -- Prefix to use for bot commands
 setting("bool",   "debug", false) -- Enable debug output
 setting("bool",   "enable_player_part", true) -- Whether to enable players joining and parting the channel

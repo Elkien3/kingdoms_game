@@ -5,7 +5,7 @@ local mname     = "memorandum"
 -----------------------------------------------------------------------------------------------
 --              { left  , bottom , front  ,  right ,  top   ,  back  }
 local sheet =   { -1/2  , -1/2   , -1/2   , 1/2    , -7/16  ,  1/2  }
-local info  =   'On this piece of paper is written: "'
+local info  =   '"'
 local sign  =   '" Signed by '
             
 minetest.register_craftitem(":default:paper", {
