@@ -154,10 +154,11 @@ minetest.register_node("painting:pic", {
 		local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
 		--compare resulutions of picture and canvas the player wields
 		--if it isn't the same don't copy
-		data_res = minetest.deserialize(minetest.decompress(data)).res
 		wname = player:get_wielded_item():get_name()
 		local res = tonumber(string.sub(wname, #"painting:canvas_"+1))
-		if res == nil or data_res == nil then return end
+		if res == nil then return end
+		data_res = minetest.deserialize(minetest.decompress(data)).res
+		if data_res == nil then return end
 		if res ~= data_res then
 			minetest.chat_send_player(player:get_player_name(), 
 				"not same canvas type!")
@@ -333,6 +334,7 @@ minetest.register_craftitem("painting:paintedcanvas", {
 
 		--save metadata
 		local data = legacy.load_itemmeta(itemstack:get_metadata())
+		if data == nil then return ItemStack("") end
 		minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
 
 		--add entity
@@ -343,6 +345,7 @@ minetest.register_craftitem("painting:paintedcanvas", {
 		pos.z = pos.z + dir.z * off
 
 		data = minetest.deserialize(minetest.decompress(data))
+		if data == nil then return ItemStack("") end
 
 		local obj = minetest.add_entity(pos, "painting:picent")
 		obj:set_properties{ textures = { to_imagestring(data.grid, data.res) }}
