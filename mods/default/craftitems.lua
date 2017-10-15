@@ -30,11 +30,21 @@ local function book_on_use(itemstack, user)
 		title = data.title
 		text = data.text
 		owner = data.owner
-
+		while(true) do
+			local nn1,nn2 = text:find("\r")
+			if nn1 ~= nil and nn2 ~= nil then
+				local str_b = text:sub(1,nn1-1)
+				local str_e = text:sub(nn2+1)
+				text = str_b .. "\n" .. str_e
+			else
+				break
+			end
+		end
+		
 		for str in (text .. "\n"):gmatch("([^\n]*)[\n]") do
 			lines[#lines+1] = str
 		end
-
+		
 		if data.page then
 			page = data.page
 			page_max = data.page_max
@@ -68,7 +78,6 @@ local function book_on_use(itemstack, user)
 			"label[3.2,7.7;Page " .. page .. " of " .. page_max .. "]" ..
 			"button[4.9,7.6;0.8,0.8;book_next;>]"
 	end
-
 	minetest.show_formspec(player_name, "default:book", formspec)
 	return itemstack
 end
@@ -110,6 +119,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		end
 		data.description = "\""..short_title.."\" by "..data.owner
 		data.text = fields.text:sub(1, max_text_size)
+		while(true) do
+			local nn1,nn2 = data.text:find("\r")
+			if nn1 ~= nil and nn2 ~= nil then
+				local str_b = data.text:sub(1,nn1-1)
+				local str_e = data.text:sub(nn2+1)
+				data.text = str_b .. "\n" .. str_e
+			else
+				break
+			end
+		end
 		data.page = 1
 		data.page_max = math.ceil((#data.text:gsub("[^\n]", "") + 1) / lpp)
 
