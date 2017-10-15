@@ -62,6 +62,11 @@ for i, size in ipairs(sizes) do
 	})
 end
 
+minetest.register_craftitem("cake:cake_oncooked", {
+	description = S("Uncooked Cake"),
+	inventory_image = "cake_uncooked.png",
+})
+
 if not minetest.get_modpath("food") then
 	minetest.register_craftitem("cake:sugar", {
 		description = S("Sugar"),
@@ -80,7 +85,7 @@ end
 
 minetest.register_craft({
 	type = "shapeless",
-	output = "cake:cake",
+	output = "cake:cake_uncooked",
 	recipe = {"farming:flour", "group:water_bucket", "group:food_sugar", "group:food_sugar"},
 	replacements = {
 		{"group:water_bucket", "bucket:bucket_empty"},
@@ -89,6 +94,12 @@ minetest.register_craft({
 		{"bucket:bucket_water", "bucket:bucket_empty"},
 		{"bucket:bucket_river_water", "bucket:bucket_empty"}
 	}
+})
+minetest.register_craft({
+	output = "cake:cake",
+	type = "cooking",
+	cooktime = 15,
+	recipe = "cake:cake_uncooked"
 })
 
 -- THROWABLE CAKE --
