@@ -62,7 +62,7 @@ for i, size in ipairs(sizes) do
 	})
 end
 
-minetest.register_craftitem("cake:cake_oncooked", {
+minetest.register_craftitem("cake:cake_uncooked", {
 	description = S("Uncooked Cake"),
 	inventory_image = "cake_uncooked.png",
 })
