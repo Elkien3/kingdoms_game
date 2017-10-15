@@ -31,7 +31,7 @@ whinny:register_mob ("whinny:horse"..basename, {
     type = "animal",
     hp_min = 10,
     hp_max = 10,
-    collisionbox = {-.5, -0.01, -.5, .5, 1.4, .5},
+    collisionbox = {-.45, -0.01, -.45, .45, 1.4, .45},
     available_textures = {
         total = 1,
         texture_1 = {"whinny_horse"..basename..".png"},
@@ -299,7 +299,7 @@ register_basehorse("whinny:horse"..basename.."h1", {
     description = description,
     inventory_image = "whinny_horse"..basename.."_inventory.png",},{
     physical = true,
-    collisionbox = {-.5, -0.01, -.5, .5, 1.4, .5},
+    collisionbox = {-.45, -0.01, -.45, .45, 1.4, .45},
     visual = "mesh",
     stepheight = 1.1,
     visual_size = {x=1,y=1},
