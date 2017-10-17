@@ -104,7 +104,7 @@ function email.get_formspec(name)
 	end
 	fs = fs .. "]"
 
-	fs = fs .. "button[0,7.25;2,1;clear;Delete All]"
+	fs = fs .. "button[0,7.25;2,1;clearinbox;Delete All]"
 	--fs = fs .. "button[0,7.25;2,1;clear;Mark as read]"
 	fs = fs .. "button_exit[10.1,7.25;2,1;close;Close]"
 	fs = fs .. "label[2,7.4;Exit then type /mail username message to reply]"
@@ -137,7 +137,7 @@ function email.show_inbox(name, text_mode)
 end
 
 minetest.register_on_player_receive_fields(function(player,formname,fields)
-	if fields.clear then
+	if fields.clearinbox then
 		local name = player:get_player_name()
 		email.clear_inbox(name)
 		minetest.chat_send_player(name, "Inbox cleared!")
