@@ -115,6 +115,9 @@ minetest.register_node(":default:sign_wall_wood", {
         local fdir = minetest.dir_to_facedir(dir)
 
         local sign_info
+		
+		if minetest.env:get_node(above).name == "air" then
+		
         if wdir == 0 then
             --how would you add sign to ceiling?
             minetest.env:add_item(above, "default:sign_wall_wood")
@@ -135,6 +138,7 @@ minetest.register_node(":default:sign_wall_wood", {
 
 		itemstack:take_item()
         return itemstack
+		end
     end,
     on_construct = function(pos)
         construct_sign(pos)
