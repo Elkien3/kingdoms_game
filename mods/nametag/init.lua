@@ -65,6 +65,8 @@ minetest.register_globalstep(function(dtime)
 				addtag(player)
 			end
 		end
+	else
+		checktimer = checktimer + dtime
 	end
 end)
 
