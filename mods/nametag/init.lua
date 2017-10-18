@@ -4,25 +4,25 @@ local checktimer = 0
 function addtag(player)
     local pos = player:getpos()
     local ent = minetest.env:add_entity(pos, "nametag:tag")
-    
-			local color = "W"
-			local texture = "npcf_tag_bg.png"
-			local x = math.floor(134 - ((player:get_player_name():len() * 11) / 2))
-			local i = 0
-			player:get_player_name():gsub(".", function(char)
-				if char:byte() > 64 and char:byte() < 91 then
-					char = "U"..char
-				end
-				texture = texture.."^[combine:84x14:"..(x+i)..",0="..color.."_"..char..".png"
-				i = i + 11
-			end)
+	if not nametags[player] then
+		local color = "W"
+		local texture = "npcf_tag_bg.png"
+		local x = math.floor(134 - ((player:get_player_name():len() * 11) / 2))
+		local i = 0
+		player:get_player_name():gsub(".", function(char)
+			if char:byte() > 64 and char:byte() < 91 then
+				char = "U"..char
+			end
+			texture = texture.."^[combine:84x14:"..(x+i)..",0="..color.."_"..char..".png"
+			i = i + 11
+		end)
 			ent:set_properties({textures={texture}})
-                        
-    if ent~= nil then
-       ent:set_attach(player, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
-       ent = ent:get_luaentity() 
-       ent.wielder = player
-	   nametags[player:get_player_name()] = ent.object
+		if ent~= nil then
+			ent:set_attach(player, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
+			ent = ent:get_luaentity() 
+			ent.wielder = player
+			nametags[player:get_player_name()] = ent.object
+		end
     end
 end
 
