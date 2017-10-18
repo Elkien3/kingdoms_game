@@ -6,11 +6,11 @@ Rules:
 2. Don't be *overly* cruel, destructive, or inappropriate.
 3. Keep swearing to a minimum, and don't spam.
 4. No "Dating" or the like.
-5. Don't clear out entire forests. replant!
-6. If you raid a kingdom while it's members are offline, only take small amounts of loot.
+5. Don't clear out entire forests without replanting.
+6. If you raid a kingdom while it's members are offline, you may not destroy or steal much.
 7. Please keep your builds medieval-ish times, and follow the laws of physics.
 
-Remember: A little bit of destruction on war is O.K. just "Don't be *overly* cruel"
+Remember: A some destruction during war is O.K. just "Don't be *overly* cruel"
 ]]
 
 --The questions on the rules, if the quiz is used.
