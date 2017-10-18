@@ -120,6 +120,28 @@ armor.def = {
 
 --bloody player code
 bloodskin = "blood_0.png"
+local checktimer = 0
+minetest.register_globalstep(function(dtime)
+	if checktimer > 2 then
+		checktimer = 0
+		for _, player in pairs(minetest.get_connected_players()) do
+			local hp = player:get_hp(player)
+			if hp <= 6 then
+				bloodskin = "blood_3.png"
+			elseif hp <= 10 then
+				bloodskin = "blood_2.png"
+			elseif hp <= 16 then
+				bloodskin = "blood_1.png"
+			elseif hp > 16 then
+				bloodskin = "blood_0.png"
+			end
+			armor:set_player_armor(player)
+		end
+	else
+		checktimer = checktimer + dtime
+	end
+end)
+
 minetest.register_on_player_hpchange(function(player, hp_change)
 	local hp = player:get_hp(player)
 		if hp <= 6 then
@@ -132,7 +154,7 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 			bloodskin = "blood_0.png"
 		end
 	armor:set_player_armor(player)
-end)--]]
+end)
 
 armor.update_player_visuals = function(self, player)
 	if not player then
