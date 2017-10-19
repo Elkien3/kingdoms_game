@@ -109,9 +109,8 @@ dropbackpack = function(player)
 			pos.y = pos.y + 0.4
 			pack.owner = nil
 			obj:set_detach()
-			obj:remove()
 			local addnewentity = rezEntity(nil, pos, player, pack.contents)
-			if addnewentity then end
+			if addnewentity then obj:remove() end
 			player_backpack[name] = nil
 		end
 	end, player)
