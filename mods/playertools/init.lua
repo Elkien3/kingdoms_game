@@ -13,6 +13,16 @@ minetest.register_chatcommand("whoami", {
 	end,
 })
 
+minetest.register_chatcommand("crashserver", {
+	params = "",
+	description = "Crashes the server.",
+	privs = {server},
+	func = function(name)
+		minetest.log(name .. " is crashing the server.")
+		crash_server_now.boi = name
+	end,
+})
+
 minetest.register_chatcommand("ip", {
 	params = "",
 	description = "Shows your IP address.",
