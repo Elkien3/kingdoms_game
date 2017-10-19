@@ -100,7 +100,7 @@ minetest.after(CLEANUP_PERIOD__S, cleanInventory)
 
 dropbackpack = function(player)
 	local player = player
-	minetest.after(.1, function(player) 
+	minetest.after(.5, function(player) 
 		local name = player:get_player_name()
 		if player_backpack[name] then
 			local pos = player:getpos()
