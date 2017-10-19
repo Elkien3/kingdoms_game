@@ -317,17 +317,19 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		cur_team = tname
 		end
 	if fields.scroll_up then
-		scroll_diplomacy = scroll_diplomacy - 1
-		if scroll_diplomacy < 0 then
+		if scroll_diplomacy > 0 then
+			scroll_diplomacy = scroll_diplomacy - 1
+		else
 			scroll_diplomacy = 0
-			end
+		end
 		ctf.gui.show(name, "diplo", cur_team)
 		end
 	if fields.scroll_down then
-		scroll_diplomacy = scroll_diplomacy + 1
-		if scroll_diplomacy > (scroll_max+5) then
+		if scroll_diplomacy < (scroll_max+5) then
+			scroll_diplomacy = scroll_diplomacy + 1
+		else
 			scroll_diplomacy = scroll_max
-			end
+		end
 		ctf.gui.show(name, "diplo", cur_team)
 		end
 
