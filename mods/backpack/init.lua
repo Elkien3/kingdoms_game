@@ -108,7 +108,7 @@ dropbackpack = function(player)
 		pack.owner = nil
 		obj:set_detach()
 		local addnewentity = rezEntity(nil, pos, player, pack.contents)
-		if addnewentity then obj:remove() end
+		if obj:remove() then addnewentity end
 		player_backpack[name] = nil
 	end
 end
@@ -423,7 +423,7 @@ end
 minetest.register_tool(
    "backpack:backpack",
    {
-      description = "Backpack (WORK IN PROGRESS, USE AT YOUR OWN RISK)",
+      description = "Backpack",
       groups = { bag = BAG_WIDTH*BAG_HEIGHT, flammable = 1 },
       inventory_image = "inventory_plus_backpack.png",
       wield_image = "inventory_plus_backpack.png",
@@ -453,6 +453,7 @@ minetest.register_tool(
       --    detached proxy that doesn't allow the bag's stack to be changed
       --    while open!
    })
+--[[
 minetest.register_craft(
    {
       output = "backpack:backpack",
@@ -463,3 +464,4 @@ minetest.register_craft(
             { "group:wool", "group:wool", "group:wool" },
          }
    })
+--]]
