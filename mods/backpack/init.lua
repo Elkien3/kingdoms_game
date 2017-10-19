@@ -99,18 +99,22 @@ end
 minetest.after(CLEANUP_PERIOD__S, cleanInventory)
 
 dropbackpack = function(player)
-	local name = player:get_player_name()
-	if player_backpack[name] then
-		local pos = player:getpos()
-		local pack = player_backpack[name]
-		local obj = pack.object
-		pos.y = pos.y + 0.4
-		pack.owner = nil
-		obj:set_detach()
-		local addnewentity = rezEntity(nil, pos, player, pack.contents)
-		if obj:remove() then addnewentity end
-		player_backpack[name] = nil
-	end
+	local player = player
+	minetest.after(.1, function(player) 
+		local name = player:get_player_name()
+		if player_backpack[name] then
+			local pos = player:getpos()
+			local pack = player_backpack[name]
+			local obj = pack.object
+			pos.y = pos.y + 0.4
+			pack.owner = nil
+			obj:set_detach()
+			obj:remove()
+			local addnewentity = rezEntity(nil, pos, player, pack.contents)
+			if addnewentity then end
+			player_backpack[name] = nil
+		end
+	end, player)
 end
 
 minetest.register_on_leaveplayer(function(player)
@@ -423,7 +427,7 @@ end
 minetest.register_tool(
    "backpack:backpack",
    {
-      description = "Backpack",
+      description = "Backpack (WORK IN PROGRESS, USE AT YOUR OWN RISK)",
       groups = { bag = BAG_WIDTH*BAG_HEIGHT, flammable = 1 },
       inventory_image = "inventory_plus_backpack.png",
       wield_image = "inventory_plus_backpack.png",
@@ -453,7 +457,6 @@ minetest.register_tool(
       --    detached proxy that doesn't allow the bag's stack to be changed
       --    while open!
    })
---[[
 minetest.register_craft(
    {
       output = "backpack:backpack",
@@ -464,4 +467,3 @@ minetest.register_craft(
             { "group:wool", "group:wool", "group:wool" },
          }
    })
---]]
