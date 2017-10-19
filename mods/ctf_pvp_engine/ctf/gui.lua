@@ -157,18 +157,18 @@ ctf.gui.register_tab("diplo", "Diplomacy", function(name, tname)
 	for i = 1, #data do
 		scroll_max = i
 		end
-	scroll_max = scroll_max - 5
+	scroll_max = scroll_max - 4
 	
-	if scroll_diplomacy > (scroll_max+5) then
-		scroll_diplomacy = (scroll_max+5)
+	if scroll_diplomacy > (scroll_max+4) then
+		scroll_diplomacy = (scroll_max+4)
 		end
 		
 	if scroll_diplomacy > 0 then
 		result = result .. "button[9.2,0.44;1,3;scroll_up;Up]"
-		end
-	if scroll_diplomacy <= scroll_max then
+	end
+	if scroll_diplomacy < scroll_max then
 		result = result .. "button[9.2,3.8;1,3;scroll_down;Down]"
-		end
+	end
 		
 	for i = 1, #data do
 		amount = i
@@ -325,7 +325,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		ctf.gui.show(name, "diplo", cur_team)
 		end
 	if fields.scroll_down then
-		if scroll_diplomacy < (scroll_max+5) then
+		if scroll_diplomacy < (scroll_max) then
 			scroll_diplomacy = scroll_diplomacy + 1
 		else
 			scroll_diplomacy = scroll_max
