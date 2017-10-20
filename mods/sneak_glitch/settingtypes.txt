@@ -1,0 +1,2 @@
+#    Replaces the new sneak behaviour with the old one
+sneak_glitch.use_old_code (Use old sneak code) bool false
