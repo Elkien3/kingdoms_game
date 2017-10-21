@@ -1,5 +1,4 @@
 minetest.override_item("default:dirt", {
-	groups = {crumbly=3,soil=1},
 	soil = {
 		base = "default:dirt",
 		dry = "farming:soil",
@@ -8,9 +7,24 @@ minetest.override_item("default:dirt", {
 })
 
 minetest.override_item("default:dirt_with_grass", {
-	groups = {crumbly=3,soil=1},
 	soil = {
 		base = "default:dirt_with_grass",
+		dry = "farming:soil",
+		wet = "farming:soil_wet"
+	}
+})
+
+minetest.override_item("default:dirt_with_dry_grass", {
+	soil = {
+		base = "default:dirt_with_dry_grass",
+		dry = "farming:soil",
+		wet = "farming:soil_wet"
+	}
+})
+
+minetest.override_item("default:dirt_with_rainforest_litter", {
+	soil = {
+		base = "default:dirt_with_rainforest_litter",
 		dry = "farming:soil",
 		wet = "farming:soil_wet"
 	}
@@ -80,11 +94,12 @@ minetest.register_node("farming:straw", {
 	description = "Straw",
 	tiles = {"farming_straw.png"},
 	is_ground_content = false,
-	groups = {snappy=3, flammable=4},
+	groups = {snappy=3, flammable=4, fall_damage_add_percent=-30},
 	sounds = default.node_sound_leaves_defaults(),
 })
 
 minetest.register_abm({
+	label = "Farming soil",
 	nodenames = {"group:field"},
 	interval = 15,
 	chance = 4,
@@ -104,7 +119,7 @@ minetest.register_abm({
 		end
 		local nn_def = minetest.registered_nodes[nn.name] or nil
 		pos.y = pos.y - 1
-		
+
 		if nn_def and nn_def.walkable and minetest.get_item_group(nn.name, "plant") == 0 then
 			minetest.set_node(pos, {name = base})
 			return
@@ -126,7 +141,7 @@ minetest.register_abm({
 					if minetest.get_item_group(nn.name, "plant") == 0 and minetest.get_item_group(nn.name, "seed") == 0 then
 						minetest.set_node(pos, {name = base})
 					end
-					
+
 				-- if its wet turn it back into dry soil
 				elseif wet_lvl == 1 then
 					minetest.set_node(pos, {name = dry})
@@ -137,7 +152,7 @@ minetest.register_abm({
 })
 
 
-for i = 1, 5 do		
+for i = 1, 5 do
 	minetest.override_item("default:grass_"..i, {drop = {
 		max_items = 1,
 		items = {
@@ -146,7 +161,7 @@ for i = 1, 5 do
 		}
 	}})
 end
-	
+
 minetest.override_item("default:junglegrass", {drop = {
 	max_items = 1,
 	items = {
