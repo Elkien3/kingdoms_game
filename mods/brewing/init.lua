@@ -223,3 +223,11 @@ for _, data in pairs(recipes) do
 		overwritefood("brewing:"..data[2], data[3])
 	end
 end
+minetest.register_craft({
+	output = 'brewing:cauldron_empty',
+	recipe = {
+		{'default:steel_ingot', '', 'default:steel_ingot'},
+		{'default:steel_ingot', '', 'default:steel_ingot'},
+		{'default:steel_ingot', 'default:steel_ingot', 'default:steel_ingot'},
+	}
+})
