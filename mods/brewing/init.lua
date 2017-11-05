@@ -116,6 +116,7 @@ minetest.register_node("brewing:cauldron_one_third_full",{
 
 minetest.register_node("brewing:cauldron_empty",{
     drawtype="nodebox",
+	description= "Empty Cauldron",
     tiles = {"lottpotion_cauldron_side.png"},
     paramtype = "light",
 	paramtype2 = "facedir",
