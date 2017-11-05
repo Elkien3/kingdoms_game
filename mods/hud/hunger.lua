@@ -47,7 +47,9 @@ function hud.item_eat(hunger_change, replace_with_item, poisen, heal)
 			end
 
 			--sound:eat
-			itemstack:add_item(replace_with_item)
+			--itemstack:add_item(replace_with_item)
+			local player_inv = user:get_inventory()
+			player_inv:add_item("main", replace_with_item)
 		end
 		return itemstack
 	end
