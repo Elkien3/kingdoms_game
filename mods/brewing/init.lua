@@ -162,10 +162,10 @@ minetest.register_node("brewing:drinking_glass_water", {
 local recipes = {
 --MAKE YOUR OWN DRINK HERE!
 --drink api: description, itemname, fill value, craft items.
-	{"Wine", "wine", 8, {"default:apple", "default:apple", "brewing:cider"}},
-    {"Beer", "beer", 2, {"farming:wheat", "farming:wheat", "brewing:drinking_glass_water"}},
-    {"Cider", "cider", 4 , {"default:apple", "default:apple", "brewing:drinking_glass_water"}},
-    {"Ale", "ale", 2, {"farming:seed_wheat", "farming:wheat", "brewing:drinking_glass_water"}},
+	{"Wine", "wine", 4, {"default:apple", "cake:sugar", "brewing:cider"}},
+    {"Beer", "beer", 2, {"farming:wheat", "farming:wheat", "cake:sugar" ,"brewing:drinking_glass_water"}},
+    {"Cider", "cider", 2 , {"default:apple", "cake:sugar", "brewing:drinking_glass_water"}},
+    {"Ale", "ale", 2, {"farming:seed_wheat", "farming:wheat", "cake:sugar", "brewing:drinking_glass_water"}},
 }
 for _, data in pairs(recipes) do
 	minetest.register_node("brewing:"..data[2], {
@@ -195,7 +195,13 @@ for _, data in pairs(recipes) do
 			end
 		end,
 		groups = {vessel=1,dig_immediate=4,attached_node=1},
-		on_use = minetest.item_eat(data[3]),
+		
+		on_use = function(itemstack, player, pointed_thing)
+			local player_inv = player:get_inventory()
+			minetest.item_eat(data[3])
+			player_inv:add_item("main", "vessels:drinking_glass")
+		end,
+		
 		selection_box = {
 			type = "fixed",
 			fixed = {-0.25, -0.5, -0.25, 0.25, 0.4, 0.25}
@@ -220,7 +226,7 @@ for _, data in pairs(recipes) do
 		recipe = "brewing:"..data[2].."_unbrewed"
 	})
 	if minetest.get_modpath("hud") ~= nil then
-		overwritefood("brewing:"..data[2], data[3])
+		overwritefood("brewing:"..data[2], data[3], "vessels:drinking_glass")
 	end
 end
 minetest.register_craft({
