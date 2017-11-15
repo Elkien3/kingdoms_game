@@ -23,6 +23,7 @@ function addtag(player)
        ent = ent:get_luaentity() 
        ent.wielder = player
     end
+	--minetest.chat_send_all("tag made for "..player:get_player_name())
 end
 
 function removetag(player)
@@ -60,7 +61,7 @@ minetest.register_globalstep(function(dtime)
 		for _, player in pairs(minetest.get_connected_players()) do
 			if nametags[player:get_player_name()]:get_luaentity() == nil then 
 				addtag(player)
-				minetest.chat_send_all("tag made for "..player:get_player_name())
+				--minetest.chat_send_all("tag made for "..player:get_player_name())
 			end
 		end
 	else
@@ -77,7 +78,7 @@ function nametag:on_step(dtime)
 		self.object:remove()
 		return
 	else
-		self.object:set_attach(wielder, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
+		--self.object:set_attach(wielder, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
 	end
 end
 
