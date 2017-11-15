@@ -3,26 +3,25 @@ local checktimer = 0
 
 function addtag(player)
     local pos = player:getpos()
-    local ent = minetest.env:add_entity(pos, "nametag:tag")
-	if not nametags[player] then
-		local color = "W"
-		local texture = "npcf_tag_bg.png"
-		local x = math.floor(134 - ((player:get_player_name():len() * 11) / 2))
-		local i = 0
-		player:get_player_name():gsub(".", function(char)
-			if char:byte() > 64 and char:byte() < 91 then
-				char = "U"..char
-			end
-			texture = texture.."^[combine:84x14:"..(x+i)..",0="..color.."_"..char..".png"
-			i = i + 11
-		end)
+    local ent = minetest.env:add_entity(pos, "playertag:tag")
+			local color = "W"
+			local texture = "npcf_tag_bg.png"
+			local x = math.floor(134 - ((player:get_player_name():len() * 11) / 2))
+			local i = 0
+			player:get_player_name():gsub(".", function(char)
+				if char:byte() > 64 and char:byte() < 91 then
+					char = "U"..char
+				end
+				texture = texture.."^[combine:84x14:"..(x+i)..",0="..color.."_"..char..".png"
+				i = i + 11
+			end)
 			ent:set_properties({textures={texture}})
-		if ent~= nil then
-			ent:set_attach(player, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
-			ent = ent:get_luaentity() 
-			ent.wielder = player
-			nametags[player:get_player_name()] = ent.object
-		end
+                        
+    if ent ~= nil then
+       ent:set_attach(player, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
+	   nametags[player:get_player_name()] = ent
+       ent = ent:get_luaentity() 
+       ent.wielder = player
     end
 end
 
@@ -56,35 +55,33 @@ local nametag = {
 }
 
 minetest.register_globalstep(function(dtime)
-	if checktimer > 2 then
+	if checktimer > 1 then
 		checktimer = 0
 		for _, player in pairs(minetest.get_connected_players()) do
-			if nametags[player:get_player_name()] then
-				return
-			else
+			if nametags[player:get_player_name()]:get_luaentity() == nil then 
 				addtag(player)
+				minetest.chat_send_all("tag made for "..player:get_player_name())
 			end
 		end
 	else
 		checktimer = checktimer + dtime
 	end
 end)
-
+--
 function nametag:on_step(dtime)
 	local wielder = self.wielder
 	if wielder == nil then
-		self.remove()
+		self.object:remove()
 		 return
 	elseif minetest.env:get_player_by_name(wielder:get_player_name()) == nil then
-		self.remove()
+		self.object:remove()
 		return
 	else
 		self.object:set_attach(wielder, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
-		nametags[wielder:get_player_name()] = self.object
 	end
 end
 
-minetest.register_entity("nametag:tag", nametag)
+minetest.register_entity("playertag:tag", nametag)
 
 minetest.register_on_joinplayer(function (player)
 	addtag(player)
