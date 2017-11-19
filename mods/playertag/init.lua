@@ -56,12 +56,14 @@ local nametag = {
 }
 
 minetest.register_globalstep(function(dtime)
-	if checktimer > 1 then
+	if checktimer > 10 then
 		checktimer = 0
 		for _, player in pairs(minetest.get_connected_players()) do
 			if nametags[player:get_player_name()]:get_luaentity() == nil then 
 				addtag(player)
 				--minetest.chat_send_all("tag made for "..player:get_player_name())
+			else
+				nametags[player:get_player_name()]:set_attach(player, "", {x=0,y=9,z=0}, {x=0,y=0,z=0})
 			end
 		end
 	else
