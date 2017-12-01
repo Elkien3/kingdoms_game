@@ -100,10 +100,10 @@ function boat.on_punch(self, puncher)
 	if not puncher or not puncher:is_player() or self.removed then
 		return
 	end
-	if self.driver and puncher == self.driver then
+	if self.driver then
+		self.driver:set_detach()
+		default.player_attached[self.driver:get_player_name()] = false
 		self.driver = nil
-		puncher:set_detach()
-		default.player_attached[puncher:get_player_name()] = false
 	end
 	if not self.driver then
 		self.removed = true
