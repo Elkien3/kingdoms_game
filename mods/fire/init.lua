@@ -73,20 +73,41 @@ minetest.register_node("fire:permanent_flame", {
 minetest.register_tool("fire:flint_and_steel", {
 	description = "Flint and Steel",
 	inventory_image = "fire_flint_steel.png",
-	on_use = function(itemstack, user, pointed_thing)
-		local player_name = user:get_player_name()
-		local pt = pointed_thing
+	sound = {breaks = "default_tool_breaks"},
 
-		if pt.type == "node" and minetest.get_node(pt.above).name == "air" then
-			if not minetest.is_protected(pt.above, player_name) then
-				minetest.set_node(pt.above, {name="fire:basic_flame"})
-			else
+	on_use = function(itemstack, user, pointed_thing)
+		local sound_pos = pointed_thing.above or user:get_pos()
+		minetest.sound_play(
+			"fire_flint_and_steel",
+			{pos = sound_pos, gain = 0.5, max_hear_distance = 8}
+		)
+		local player_name = user:get_player_name()
+		if pointed_thing.type == "node" then
+			local node_under = minetest.get_node(pointed_thing.under).name
+			local nodedef = minetest.registered_nodes[node_under]
+			if not nodedef then
+				return
+			end
+			if minetest.is_protected(pointed_thing.under, player_name) then
 				minetest.chat_send_player(player_name, "This area is protected")
+				return
+			end
+			if nodedef.on_ignite then
+				nodedef.on_ignite(pointed_thing.under, user)
+			elseif minetest.get_item_group(node_under, "flammable") >= 1
+					and minetest.get_node(pointed_thing.above).name == "air" then
+				minetest.set_node(pointed_thing.above, {name = "fire:basic_flame"})
 			end
 		end
-		
-		if not minetest.setting_getbool("creative_mode") then
+		if not (creative and creative.is_enabled_for
+				and creative.is_enabled_for(player_name)) then
+			-- Wear tool
+			local wdef = itemstack:get_definition()
 			itemstack:add_wear(1000)
+			-- Tool break sound
+			if itemstack:get_count() == 0 and wdef.sound and wdef.sound.breaks then
+				minetest.sound_play(wdef.sound.breaks, {pos = sound_pos, gain = 0.5})
+			end
 			return itemstack
 		end
 	end
@@ -123,6 +144,22 @@ end
 -- value: {handle=sound handle, name=sound name}
 fire.sounds = {}
 
+
+--permanent fire on coalblock
+minetest.override_item("default:coalblock", {
+	after_destruct = function(pos, oldnode)
+		pos.y = pos.y + 1
+		if minetest.get_node(pos).name == "fire:permanent_flame" then
+			minetest.remove_node(pos)
+		end
+	end,
+	on_ignite = function(pos, igniter)
+		local flame_pos = {x = pos.x, y = pos.y + 1, z = pos.z}
+		if minetest.get_node(flame_pos).name == "air" then
+			minetest.set_node(flame_pos, {name = "fire:permanent_flame"})
+		end
+	end,
+})
 
 -- Update fire sounds in sound area of position
 
