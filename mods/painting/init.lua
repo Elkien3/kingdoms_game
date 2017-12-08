@@ -572,7 +572,7 @@ function legacy.load_itemmeta(data)
 	local vend = data:find"(version)"
 	if not vend then -- the oldest version
 		local t = minetest.deserialize(data)
-		if t.version then
+		if t and t.version then
 			minetest.log("error", "[painting] this musn't happen!")
 		end
 		minetest.log("legacy", "[painting] updating painting meta")
