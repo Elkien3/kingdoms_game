@@ -186,13 +186,13 @@ minetest.register_entity("painting:picent", {
 	on_activate = function(self, staticdata)
 		local pos = self.object:getpos()
 		local data = legacy.load_itemmeta(minetest.get_meta(pos):get_string("painting:picturedata"))
-		data = minetest.deserialize(
-			minetest.decompress(data)
-		)
+		data = minetest.deserialize
 		if not data
 		or not data.grid then
 			return
 		end
+		data = minetest.decompress(data)
+		
 		self.object:set_properties{textures = { to_imagestring(data.grid, data.res) }}
 		if data.version ~= current_version then
 			minetest.log("legacy", "[painting] updating placed picture data")
