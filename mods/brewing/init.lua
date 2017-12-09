@@ -167,6 +167,7 @@ local recipes = {
     {"Beer", "beer", 2, {"farming:wheat", "farming:wheat", "cake:sugar" ,"brewing:drinking_glass_water"}},
     {"Cider", "cider", 2 , {"default:apple", "cake:sugar", "brewing:drinking_glass_water"}},
     {"Ale", "ale", 2, {"farming:seed_wheat", "farming:wheat", "cake:sugar", "brewing:drinking_glass_water"}},
+	{"Root Beer", "rootbeer", 2, {"farming:seed_wheat", "default:sapling", "cake:sugar", "brewing:drinking_glass_water"}},
 }
 for _, data in pairs(recipes) do
 	minetest.register_node("brewing:"..data[2], {
