@@ -59,7 +59,7 @@ minetest.register_craft({
 	minetest.register_tool("xtraarmor:boots_leather", {
 		description = "Wool boots",
 		inventory_image = "xtraarmor_inv_boots_leather.png",
-		groups = {armor_feet=5, physics_speed=0.05, armor_use=1000},
+		groups = {armor_feet=5, physics_speed=0.15, armor_use=1000},
 		wear = 0,
 	})
 
