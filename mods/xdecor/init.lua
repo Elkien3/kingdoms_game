@@ -24,4 +24,5 @@ dofile(modpath.."/rope.lua")
 dofile(modpath.."/lights.lua")
 --dofile(modpath.."/workbench.lua")
 --print(string.format("[xdecor] loaded in %.2f ms", (os.clock()-t)*1000))
+dofile(modpath.."/evenmoreblocks.lua")
 
