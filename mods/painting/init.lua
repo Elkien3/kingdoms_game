@@ -44,7 +44,7 @@ local picbox = {
 local current_version = "nopairs"
 local legacy = {}
 
--- puts the version before the compressed data
+-- puts the version before the data
 local function get_metastring(data)
 	return current_version.."(version)"..data
 end
@@ -138,7 +138,8 @@ minetest.register_node("painting:pic", {
 		end
 
 		local data = legacy.load_itemmeta(oldmetadata.fields["painting:picturedata"])
-
+		print("DATA OF DIGGED IMAGE");
+		print(dump2(data))
 		--put picture data back into inventory item
 		digger:get_inventory():add_item("main", {
 			name = "painting:paintedcanvas",
@@ -154,10 +155,10 @@ minetest.register_node("painting:pic", {
 		local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
 		--compare resulutions of picture and canvas the player wields
 		--if it isn't the same don't copy
-		wname = player:get_wielded_item():get_name()
+		local wname = player:get_wielded_item():get_name()
 		local res = tonumber(string.sub(wname, #"painting:canvas_"+1))
 		if res == nil then return end
-		data_res = minetest.deserialize(minetest.decompress(data)).res
+		data_res = minetest.deserialize(data).res
 		if data_res == nil then return end
 		if res ~= data_res then
 			minetest.chat_send_player(player:get_player_name(), 
@@ -186,9 +187,7 @@ minetest.register_entity("painting:picent", {
 	on_activate = function(self, staticdata)
 		local pos = self.object:getpos()
 		local data = legacy.load_itemmeta(minetest.get_meta(pos):get_string("painting:picturedata"))
-		data = minetest.deserialize(
-			minetest.decompress(data)
-		)
+		data = minetest.deserialize(data)
 		if not data
 		or not data.grid then
 			return
@@ -197,9 +196,7 @@ minetest.register_entity("painting:picent", {
 		if data.version ~= current_version then
 			minetest.log("legacy", "[painting] updating placed picture data")
 			data.version = current_version
-			data = minetest.compress(
-				minetest.serialize(data)
-			)
+			data = minetest.serialize(data)
 			minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
 		end
 	end
@@ -338,13 +335,13 @@ minetest.register_craftitem("painting:paintedcanvas", {
 		minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
 
 		--add entity
-		dir = dirs[fd]
+		local dir = dirs[fd]
 		local off = 0.5 - thickness - 0.01
 
 		pos.x = pos.x + dir.x * off
 		pos.z = pos.z + dir.z * off
 
-		data = minetest.deserialize(minetest.decompress(data))
+		data = minetest.deserialize(data)
 		if data == nil then return ItemStack("") end
 
 		local obj = minetest.add_entity(pos, "painting:picent")
@@ -409,7 +406,7 @@ minetest.register_node("painting:canvasnode", {
 		digger:get_inventory():add_item("main", {
 			name = "painting:paintedcanvas",
 			count = 1,
-			metadata = get_metastring(minetest.compress(minetest.serialize(data)))
+			metadata = get_metastring(minetest.serialize(data))
 		})
 	end
 })
@@ -567,8 +564,10 @@ function legacy.fix_grid(grid, version)
 	fix_eldest_grid(grid)
 end
 
--- gets the compressed data from meta
+-- gets the data from meta
 function legacy.load_itemmeta(data)
+	print("LOAD ITEM DATA")
+	print(dump(data))
 	local vend = data:find"(version)"
 	if not vend then -- the oldest version
 		local t = minetest.deserialize(data)
@@ -577,7 +576,7 @@ function legacy.load_itemmeta(data)
 		end
 		minetest.log("legacy", "[painting] updating painting meta")
 		legacy.fix_grid(t.grid)
-		return minetest.compress(minetest.serialize(t))
+		return minetest.serialize(t)
 	end
 	local version = data:sub(1, vend-2)
 	data = data:sub(vend+8)
