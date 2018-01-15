@@ -138,8 +138,8 @@ minetest.register_node("painting:pic", {
 		end
 
 		local data = legacy.load_itemmeta(oldmetadata.fields["painting:picturedata"])
-		print("DATA OF DIGGED IMAGE");
-		print(dump2(data))
+		--print("DATA OF DIGGED IMAGE");
+		--print(dump2(data))
 		--put picture data back into inventory item
 		digger:get_inventory():add_item("main", {
 			name = "painting:paintedcanvas",
@@ -566,8 +566,8 @@ end
 
 -- gets the data from meta
 function legacy.load_itemmeta(data)
-	print("LOAD ITEM DATA")
-	print(dump(data))
+	--print("LOAD ITEM DATA")
+	--print(dump(data))
 	local vend = data:find"(version)"
 	if not vend then -- the oldest version
 		local t = minetest.deserialize(data)
