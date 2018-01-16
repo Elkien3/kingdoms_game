@@ -350,10 +350,12 @@ minetest.register_craftitem("painting:paintedcanvas", {
 		local data = legacy.load_itemmeta(itemstack:get_metadata())
 		-- for backwards compatiblity
 		if not minetest.deserialize(data) then
-			data = minetest.decompress(data)
-			if data then
+			status, data = pcall(minetest.decompress(data))
+			if (status and data) then
 				print("tryed to save old data"..
 				"converted to new uncompressed, save")
+			elseif not status then
+				print("error loading data")
 			end
 		end
 		-- end backwards compatiblity
