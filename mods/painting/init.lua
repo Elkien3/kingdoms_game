@@ -139,7 +139,7 @@ minetest.register_node("painting:pic", {
 
 		local data = legacy.load_itemmeta(oldmetadata.fields["painting:picturedata"])
 		--print("DATA OF DIGGED IMAGE");
-		--print(dump2(data))
+		--print(dump(data))
 		--put picture data back into inventory item
 		digger:get_inventory():add_item("main", {
 			name = "painting:paintedcanvas",
@@ -151,7 +151,8 @@ minetest.register_node("painting:pic", {
 	on_punch = function(pos, node, player, pointed_thing)
 		local meta = minetest.get_meta(pos):to_table()
 		if meta == nil then return end
-		
+		--print("metadata: painting:picturedata:")
+		--print(dump(meta.fields["painting:picturedata"]))
 		local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
 		--compare resulutions of picture and canvas the player wields
 		--if it isn't the same don't copy
@@ -186,8 +187,16 @@ minetest.register_entity("painting:picent", {
 
 	on_activate = function(self, staticdata)
 		local pos = self.object:getpos()
-		local data = legacy.load_itemmeta(minetest.get_meta(pos):get_string("painting:picturedata"))
-		data = minetest.deserialize(data)
+		local ldata = legacy.load_itemmeta(minetest.get_meta(pos):get_string("painting:picturedata"))
+		local data = minetest.deserialize(ldata)
+		-- for backwards compatiblity
+		if not data then
+			data = minetest.deserialize(minetest.decompress(ldata))
+			if data then
+				print("loaded old data, converted to new uncompressed")
+			end
+		end
+		-- end backwards compatiblity
 		if not data
 		or not data.grid then
 			return
@@ -277,6 +286,14 @@ minetest.register_entity("painting:paintent", {
 
 	on_activate = function(self, staticdata)
 		local data = minetest.deserialize(staticdata)
+		-- for backwards compatiblity
+		if not data then
+			data = minetest.deserialize(minetest.decompress(staticdata))
+			if data then
+				print("loaded old data, converted to new uncompressed")
+			end
+		end
+		-- end backwards compatiblity
 		if not data then
 			return
 		end
@@ -331,6 +348,15 @@ minetest.register_craftitem("painting:paintedcanvas", {
 
 		--save metadata
 		local data = legacy.load_itemmeta(itemstack:get_metadata())
+		-- for backwards compatiblity
+		if not minetest.deserialize(data) then
+			data = minetest.decompress(data)
+			if data then
+				print("tryed to save old data"..
+				"converted to new uncompressed, save")
+			end
+		end
+		-- end backwards compatiblity
 		if data == nil then return ItemStack("") end
 		minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
 
@@ -566,7 +592,7 @@ end
 
 -- gets the data from meta
 function legacy.load_itemmeta(data)
-	--print("LOAD ITEM DATA")
+	--print("LEGACY LOAD ITEM DATA")
 	--print(dump(data))
 	local vend = data:find"(version)"
 	if not vend then -- the oldest version
