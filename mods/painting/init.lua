@@ -136,7 +136,7 @@ minetest.register_node("painting:pic", {
 				e:remove()
 			end
 		end
-
+		if not oldmetadata.fields["painting:picturedata"] then return end
 		local data = legacy.load_itemmeta(oldmetadata.fields["painting:picturedata"])
 		--print("DATA OF DIGGED IMAGE");
 		--print(dump(data))
@@ -153,7 +153,13 @@ minetest.register_node("painting:pic", {
 		if meta == nil then return end
 		--print("metadata: painting:picturedata:")
 		--print(dump(meta.fields["painting:picturedata"]))
+		if not meta.fields["painting:picturedata"] then return end
 		local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
+		if not minetest.deserialize(data) then
+			data = minetest.decompress(data)
+			print("tryed to copy old data, convert it to new format")
+		end
+		
 		--compare resulutions of picture and canvas the player wields
 		--if it isn't the same don't copy
 		local wname = player:get_wielded_item():get_name()
@@ -350,7 +356,7 @@ minetest.register_craftitem("painting:paintedcanvas", {
 		local data = legacy.load_itemmeta(itemstack:get_metadata())
 		-- for backwards compatiblity
 		if not minetest.deserialize(data) then
-			status, data = pcall(minetest.decompress(data))
+			status, data = pcall(minetest.decompress, data)
 			if (status and data) then
 				print("tryed to save old data"..
 				"converted to new uncompressed, save")
@@ -594,8 +600,8 @@ end
 
 -- gets the data from meta
 function legacy.load_itemmeta(data)
-	--print("LEGACY LOAD ITEM DATA")
-	--print(dump(data))
+	--if not data then
+	--	data = current_version.."(version)"..
 	local vend = data:find"(version)"
 	if not vend then -- the oldest version
 		local t = minetest.deserialize(data)
