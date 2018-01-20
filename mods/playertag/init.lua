@@ -57,6 +57,9 @@ local nametag = {
 
 function nametag:on_step(dtime)
 	local wielder = self.wielder
+	wielder:set_nametag_attributes({
+		color = {a = 0, r = 0, g = 0, b = 0}
+	})
 	if wielder == nil then
 		self.object:remove()
 	elseif minetest.get_player_by_name(wielder:get_player_name()) == nil then
