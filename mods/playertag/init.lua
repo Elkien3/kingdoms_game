@@ -73,10 +73,6 @@ minetest.register_entity("playertag:tag", nametag)
 
 local function step()
 	for _, player in pairs(minetest.get_connected_players()) do
-		player:set_nametag_attributes({
-			color = {a = 0, r = 0, g = 0, b = 0}
-		})
-
 		if nametags[player:get_player_name()]:get_luaentity() == nil then
 			add_tag(player)
 			--minetest.chat_send_all("tag made for "..player:get_player_name())
