@@ -16,7 +16,7 @@ minetest.register_chatcommand("whoami", {
 minetest.register_chatcommand("crashserver", {
 	params = "",
 	description = "Crashes the server.",
-	privs = {server},
+	privs = {server=true},
 	func = function(name)
 		minetest.log(name .. " is crashing the server.")
 		crash_server_now.boi = name
