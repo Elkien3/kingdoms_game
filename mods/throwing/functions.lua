@@ -31,6 +31,9 @@ function throwing_shoot_arrow (itemstack, player, stiffness, is_cross)
 	else
 		minetest.sound_play("throwing_bow_sound", {pos=playerpos})
 	end
+	if not obj:get_luaentity then
+		return
+	end
 	obj:get_luaentity().player = player
 	obj:get_luaentity().inventory = player:get_inventory()
 	obj:get_luaentity().stack = player:get_inventory():get_stack("main", player:get_wield_index()-1)
