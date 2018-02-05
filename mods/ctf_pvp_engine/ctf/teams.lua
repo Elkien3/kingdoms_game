@@ -13,6 +13,10 @@ function ctf.team(name)
 	else
 		local team = ctf.teams[name]
 		if team then
+			--Migration to version with petitions
+			if not team.petitions then
+			    team.petitions = {}
+			end
 			if not team.data or not team.players then
 				ctf.warning("team", "Assertion failed, data{} or players{} not " ..
 						"found in team{}")
@@ -33,7 +37,8 @@ function ctf.create_team(name, data)
 	ctf.teams[name] = {
 		data = data,
 		spawn = nil,
-		players = {}
+		players = {},
+		petitions = {}
 	}
 
 	for i = 1, #ctf.registered_on_new_team do
@@ -150,8 +155,84 @@ function ctf.register_on_join_team(func)
 	table.insert(ctf.registered_on_join_team, func)
 end
 
+-- Player makes a petition to team manager to join a team
+-- Called by /apply
+function ctf.petition_join(name, tname)
+	if not name or name == "" or not tname or tname == "" then
+		ctf.log("teams", "Missing parameters to ctf.request_join")
+	end
+	local player = ctf.player(name)
+	
+	if player.team and player.team == tname then
+		minetest.chat_send_player(name, "You are already a member of team " .. tname)
+		return false
+	end
+	
+	if not ctf.setting("players_can_change_team") and player.team and ctf.team(player.team) then
+		ctf.action("teams", name .. " requested to change to " .. tname)
+		minetest.chat_send_player(name, "You are not allowed to switch teams, traitor!")
+		return false
+	end
+	
+	local team_data = ctf.team(tname)
+	if not team_data then
+		minetest.chat_send_player(name, "No such team.")
+		ctf.list_teams(name)
+		minetest.log("action", name .. " requested to join to " .. tname .. ", which doesn't exist")
+		return false
+	end
+	
+	table.insert(team_data.petitions,name)
+	ctf.post(tname, {
+		type = "request",
+		player = name,
+		mode = "petition" })
+	ctf.needs_save = true
+	return true
+end
+
+function ctf.decide_petition(petitioner_name, acceptor_name, team_name, decision)
+	if not petitioner_name then
+		return false
+	end
+	local petitioner = ctf.player(petitioner_name)
+	if not petitioner then
+		return false
+	end
+	if decision == "Accept" then
+		if petitioner.team and ctf.setting("players_can_change_team") then
+			minetest.chat_send_player(acceptor_name, "Player " .. petitioner_name .. " already a member of team " .. petitioner.team)
+		else
+			ctf.join(petitioner_name, team_name, true, acceptor_name)
+		end
+	end
+	for key, field in pairs(ctf.teams) do
+	    ctf.delete_petition(petitioner_name, key)
+	end
+	remove_petition_log_entry(team_name, petitioner_name)
+end
+
+function ctf.delete_petition(name, tname)
+	if not name or name == "" or not tname or tname == "" then
+		ctf.log("teams", "Missing parameters to ctf.delete_petition")
+	end
+	local team = ctf.team(tname)
+	if not team then
+		minetest.chat_send_player(name, "No such team.")
+		return false
+	end
+	for key, field in pairs(team.petitions) do
+		if field == name then
+			table.remove(team.petitions, key)
+			ctf.needs_save = true
+			return true
+		end
+	end
+	return false
+end
+ 
 -- Player joins team
--- Called by /join, /team join or auto allocate.
+-- Called by /join, /team join, auto allocate or by response of the team manager.
 function ctf.join(name, team, force, by)
 	if not name or name == "" or not team or team == "" then
 		ctf.log("team", "Missing parameters to ctf.join")

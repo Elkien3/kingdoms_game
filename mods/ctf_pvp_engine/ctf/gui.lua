@@ -55,7 +55,7 @@ function ctf.gui.get_tabs(name, tname)
 	local result = ""
 	local id = 1
 	local function addtab(name,text)
-		result = result .. "button[" .. (id*2-1) .. ",0;2,1;" .. name .. ";" .. text .. "]"
+		result = result .. "button[" .. (id*1.5-1) .. ",0;1.5,1;" .. name .. ";" .. text .. "]"
 		id = id + 1
 	end
 
@@ -131,6 +131,33 @@ ctf.gui.register_tab("news", "News", function(name, tname)
 		result)
 end)
 
+ctf.gui.register_tab("petitions","Petitions", function(name, tname)
+	local result = ""
+	local data = {}
+	
+	result = result .. "label[0.5,1;Petitions to join the team " .. tname .. "]"
+	
+	for key, value in pairs(ctf.teams) do
+		if key == tname then
+			local height = 1.5
+			for key, value in pairs(value.petitions) do
+				result = result .. "label[0.5.75," .. height .. ";" .. value .. "]"
+				result = result .. "button[2.5," .. height .. ";2,1;player_" ..
+					value .. ";Sign]"
+				result = result .. "button[4.5," .. height .. ";2,1;player_" ..
+					value .. ";Reject]"
+				height = height + 1
+			end
+		end
+	end
+	
+	minetest.show_formspec(name, "ctf:petitions",
+		"size[10,7]" ..
+		ctf.gui.get_tabs(name, tname) ..
+		result
+	)
+end)
+ 
 local scroll_diplomacy = 0
 local scroll_max = 0
 -- Team interface
@@ -228,7 +255,19 @@ local function formspec_is_ctf_tab(fsname)
 	end
 	return false
 end
-
+function remove_petition_log_entry(tname, pname)
+	local entries = ctf.team(tname).log
+	if not entries then
+		return
+	end
+	for i = 1, #entries do
+		if entries[i].mode == "petition" and entries[i].player == pname then
+			table.remove(entries, i)
+			return
+		end
+	end
+end
+ 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if not formspec_is_ctf_tab(formname) then
 		return false
@@ -267,40 +306,74 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local tname   = tplayer.team
 	local team    = ctf.team(tname)
 
-	if not team then
+	if not team or formname ~= "ctf:news" then
 		return false
 	end
 
-	if formname == "ctf:news" then
-		for key, field in pairs(fields) do
-			local ok, id = string.match(key, "btn_([yn])([0123456789]+)")
-			if ok and id then
-				if ok == "y" then
-					ctf.diplo.set(tname, team.log[tonumber(id)].team, team.log[tonumber(id)].msg)
+	for key, field in pairs(fields) do
+		local ok, id = string.match(key, "btn_([yn])([0123456789]+)")
+		if ok and id then
+			if ok == "y" then
+				ctf.diplo.set(tname, team.log[tonumber(id)].team, team.log[tonumber(id)].msg)
 
-					-- Post to acceptor's log
-					ctf.post(tname, {
-						msg = "You have accepted the " ..
-								team.log[tonumber(id)].msg .. " request from " ..
-								team.log[tonumber(id)].team })
+				-- Post to acceptor's log
+				ctf.post(tname, {
+					msg = "You have accepted the " ..
+							team.log[tonumber(id)].msg .. " request from " ..
+							team.log[tonumber(id)].team })
 
-					-- Post to request's log
-					ctf.post(team.log[tonumber(id)].team, {
-						msg = tname .. " has accepted your " ..
-								team.log[tonumber(id)].msg .. " request" })
+				-- Post to request's log
+				ctf.post(team.log[tonumber(id)].team, {
+					msg = tname .. " has accepted your " ..
+							team.log[tonumber(id)].msg .. " request" })
 
-					id = id + 1
-				end
-
-				table.remove(team.log, id)
-				ctf.needs_save = true
-				ctf.gui.show(name, "news")
-				return true
+				id = id + 1
 			end
+
+			table.remove(team.log, id)
+			ctf.needs_save = true
+			ctf.gui.show(name, "news")
+			return true
+		end
+		local petitioner_name, id = string.match(key, "player_([^_]+)_([0123456789]+)")
+		if petitioner_name then
+			local acceptor_name = name
+			local team_name = tname
+			local decision = field
+			ctf.decide_petition(
+				petitioner_name,
+				acceptor_name,
+				team_name,
+				decision)
+			ctf.gui.show(name, "news")
+			return true
 		end
 	end
 end)
 
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	local acceptor_name = player:get_player_name()
+	local team_name = ctf.player(acceptor_name).team
+	local team = ctf.team(team_name)
+	
+	if not team or formname ~= "ctf:petitions" then
+		return false
+	end
+	
+	for key, field in pairs(fields) do
+		local petitioner_name = string.match(key, "player_(.+)")
+		if petitioner_name then
+			local decision = field
+			ctf.decide_petition(
+				petitioner_name,
+				acceptor_name,
+				team_name,
+				decision)
+			ctf.gui.show(acceptor_name, "petitions")
+			return true
+		end
+	end
+end)
 local cur_team = nil
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local name    = player:get_player_name()
