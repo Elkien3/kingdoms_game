@@ -81,11 +81,11 @@ interact.quiz_rules_msg = "You answered a question incorrectly. Have another loo
 --The kick reason if kick is the on_wrong_quiz option.
 interact.wrong_quiz_kick_msg = "Pay more attention next time!"
 --The message sent to the player if nothing is the on_wrong_quiz option.
-interact.quiz_fail_msg = "You answered a question incorrectly. type in '/rules' to try again."
+interact.quiz_fail_msg = "You answered a question incorrectly. type in '/rules' to try again. (read them carefully)"
 
 --The messages send to the player after interact is granted.
 interact.interact_msg1 = "Thanks for accepting the rules, you now are able to interact with things."
-interact.interact_msg2 = "Happy Kingdoming! find the wiki at the spawn inn for more info!"
+interact.interact_msg2 = "Happy Kingdoming! Do /guide for help getting started!"
 
 --The priv required to use the /rules command. If fast is a default priv, I recomend replacing shout with that.
 interact.priv = {shout = true}
