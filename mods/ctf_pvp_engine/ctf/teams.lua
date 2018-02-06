@@ -13,9 +13,9 @@ function ctf.team(name)
 	else
 		local team = ctf.teams[name]
 		if team then
-			--Migration to version with petitions
-			if not team.petitions then
-			    team.petitions = {}
+			--Migration to version with applications
+			if not team.applications then
+			    team.applications = {}
 			end
 			if not team.data or not team.players then
 				ctf.warning("team", "Assertion failed, data{} or players{} not " ..
@@ -38,7 +38,7 @@ function ctf.create_team(name, data)
 		data = data,
 		spawn = nil,
 		players = {},
-		petitions = {}
+		applications = {}
 	}
 
 	for i = 1, #ctf.registered_on_new_team do
@@ -155,9 +155,9 @@ function ctf.register_on_join_team(func)
 	table.insert(ctf.registered_on_join_team, func)
 end
 
--- Player makes a petition to team manager to join a team
+-- Player makes an application to team manager to join a team
 -- Called by /apply
-function ctf.petition_join(name, tname)
+function ctf.application_join(name, tname)
 	if not name or name == "" or not tname or tname == "" then
 		ctf.log("teams", "Missing parameters to ctf.request_join")
 	end
@@ -182,48 +182,46 @@ function ctf.petition_join(name, tname)
 		return false
 	end
 	
-	table.insert(team_data.petitions,name)
-	ctf.post(tname, {
-		type = "request",
-		player = name,
-		mode = "petition" })
+	table.insert(team_data.applications,name)
+	--ctf.post(tname, {msg = name .. " has applied to join!" })
 	ctf.needs_save = true
 	return true
 end
 
-function ctf.decide_petition(petitioner_name, acceptor_name, team_name, decision)
-	if not petitioner_name then
+function ctf.decide_application(applicant_name, acceptor_name, team_name, decision)
+	if not applicant_name then
 		return false
 	end
-	local petitioner = ctf.player(petitioner_name)
-	if not petitioner then
+	local applicant = ctf.player(applicant_name)
+	if not applicant then
 		return false
 	end
 	if decision == "Accept" then
-		if petitioner.team and ctf.setting("players_can_change_team") then
-			minetest.chat_send_player(acceptor_name, "Player " .. petitioner_name .. " already a member of team " .. petitioner.team)
+		if applicant.team and ctf.setting("players_can_change_team") then
+			minetest.chat_send_player(acceptor_name, "Player " .. applicant_name .. " already a member of team " .. applicant.team)
 		else
-			ctf.join(petitioner_name, team_name, true, acceptor_name)
+			ctf.join(applicant_name, team_name, true, acceptor_name)
+			table.insert(ctf.teams[ctf.players[acceptor_name].team].log,{msg=applicant_name .. " was recruited " .. acceptor_name .. "!"})
 		end
 	end
 	for key, field in pairs(ctf.teams) do
-	    ctf.delete_petition(petitioner_name, key)
+	    ctf.delete_application(applicant_name, key)
 	end
-	remove_petition_log_entry(team_name, petitioner_name)
+	remove_application_log_entry(team_name, applicant_name)
 end
 
-function ctf.delete_petition(name, tname)
+function ctf.delete_application(name, tname)
 	if not name or name == "" or not tname or tname == "" then
-		ctf.log("teams", "Missing parameters to ctf.delete_petition")
+		ctf.log("teams", "Missing parameters to ctf.delete_application")
 	end
 	local team = ctf.team(tname)
 	if not team then
 		minetest.chat_send_player(name, "No such team.")
 		return false
 	end
-	for key, field in pairs(team.petitions) do
+	for key, field in pairs(team.applications) do
 		if field == name then
-			table.remove(team.petitions, key)
+			table.remove(team.applications, key)
 			ctf.needs_save = true
 			return true
 		end

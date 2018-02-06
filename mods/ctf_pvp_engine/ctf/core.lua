@@ -246,7 +246,7 @@ function ctf.save()
 		local out = {
 			teams = ctf.teams,
 			players = ctf.players,
-			petitions = ctf.petitions
+			applications = ctf.applications
 		}
 
 		for i = 1, #ctf.registered_on_save do
