@@ -145,11 +145,11 @@ minetest.register_chatcommand("team", {
 })
 
 minetest.register_chatcommand("apply", {
-	params = "team name",
-	description = "Petition to join to team",
+	params = "teamname",
+	description = "Apply to join to team",
 	func = function(name, param)
-		if ctf.petition_join(name, param) then
-			return true, "Petition was successfully sent to team " .. param .. "!"
+		if ctf.application_join(name, param) then
+			return true, "Application sent to team " .. param .. "!"
 		else
 			return false, "Failed to apply to team!"
 		end
