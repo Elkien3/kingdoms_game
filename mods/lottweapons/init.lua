@@ -3,6 +3,30 @@
 minetest.register_tool("lottweapons:septer", {
 	description = "Septer",
 	inventory_image = "lottweapons_septer.png",
+	on_use = function(itemstack, user, pointed_thing)
+		local userpos = user:get_pos()
+		local closeflagdistance = nil
+		local closeflag = nil
+		for tname, team in pairs(ctf.teams) do
+			local i = 0
+			for _, flag in pairs(team.flags) do
+				if not flag then
+					return flase
+				end
+				local flagpos = {x = flag.x, y = flag.y, z = flag.z}
+				local flagdistance = vector.distance(userpos, flagpos)
+				if not closeflagdistance then
+					closeflagdistance = flagdistance
+					closeflag = flag
+				elseif flagdistance < closeflagdistance then
+					closeflagdistance = flagdistance
+					closeflag = flag
+				end
+			end
+		end
+		minetest.chat_send_player(user:get_player_name(), "Closest flag is "..tostring(math.floor(closeflagdistance)).." blocks away. (Owned by "..closeflag.team..")")
+		return
+	end,
 	tool_capabilities = {
 		full_punch_interval = 2,
 		max_drop_level=1,
