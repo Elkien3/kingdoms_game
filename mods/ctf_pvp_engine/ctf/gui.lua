@@ -206,14 +206,14 @@ ctf.gui.register_tab("diplo", "Diplomacy", function(name, tname)
 		end
 
 		local L = i + scroll_diplomacy
-		
+		if data[L].state and data[L].team then
 		result = result .. "background[1," .. height .. ";8.2,1;diplo_" ..
 				data[L].state .. ".png]"
 		result = result .. "button[1.25," .. height .. ";2,1;team_" ..
 				data[L].team .. ";" .. data[L].team .. "]"
 		result = result .. "label[3.75," .. height .. ";" .. data[L].state
 				.. "]"
-
+		end
 		if ctf.can_mod(name, tname) and ctf.player(name).team == tname then
 			if not data[L].from and not data[L].to then
 				if data[L].state == "war" then
