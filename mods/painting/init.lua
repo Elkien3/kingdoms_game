@@ -252,10 +252,14 @@ local function draw_input(self, name, x,y, as_line)
 		local y0 = self.y0
 		local line = vector.twoline(x0-x, y0-y)	-- This figures how to do the line.
 		for _,coord in pairs(line) do
-			self.grid[x+coord[1]][y+coord[2]] = colors[name]
+			if self.grid then
+				self.grid[x+coord[1]][y+coord[2]] = colors[name]
+			end
 		end
 	else	-- Draw just single point.
-		self.grid[x][y] = colors[name]
+		if self.grid then
+			self.grid[x][y] = colors[name]
+		end
 	end
 	self.x0, self.y0 = x, y -- Update previous position.
 	-- Actually update the grid.
