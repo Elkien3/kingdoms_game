@@ -9,6 +9,7 @@ Rules:
 5. Don't clear out entire forests without replanting.
 6. If you raid a kingdom while it's members are offline, you may not destroy or steal much.
 7. Please keep your builds medieval-ish times, and follow the laws of physics.
+8. Hacked clients or csms that give a pvp advantage are disallowed. (However, lagging through walls is allowed.)
 
 Remember: A some destruction during war is O.K. just "Don't be *overly* cruel"
 ]]
