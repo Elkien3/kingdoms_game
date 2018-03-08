@@ -109,9 +109,11 @@ dropbackpack = function(player)
 		pack.owner = nil
 		obj:set_detach()
 		local addnewentity = rezEntity(nil, pos, player, pack.contents)
-		if obj:remove() then addnewentity() end
+		if obj:remove() then
+			addnewentity()
+		end
 		player_backpack[name] = nil
-	end, player)
+	end
 end
 
 minetest.register_on_leaveplayer(function(player)
