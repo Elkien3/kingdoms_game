@@ -100,19 +100,17 @@ minetest.after(CLEANUP_PERIOD__S, cleanInventory)
 
 dropbackpack = function(player)
 	local player = player
-	minetest.after(.5, function(player) 
 		local name = player:get_player_name()
 		if player_backpack[name] then
-			local pos = player:getpos()
-			local pack = player_backpack[name]
-			local obj = pack.object
-			pos.y = pos.y + 0.4
-			pack.owner = nil
-			obj:set_detach()
-			local addnewentity = rezEntity(nil, pos, player, pack.contents)
-			if addnewentity then obj:remove() end
-			player_backpack[name] = nil
-		end
+		local pos = player:getpos()
+		local pack = player_backpack[name]
+		local obj = pack.object
+		pos.y = pos.y + 0.4
+		pack.owner = nil
+		obj:set_detach()
+		local addnewentity = rezEntity(nil, pos, player, pack.contents)
+		if obj:remove() then addnewentity end
+		player_backpack[name] = nil
 	end, player)
 end
 
