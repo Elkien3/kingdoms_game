@@ -119,7 +119,7 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 			for i in pairs(playerslist) do
 				local player = playerslist[i]
 				local player_name = player:get_player_name()
-				local player_team = ctf.player(name).team
+				local player_team = ctf.player(player_name).team
 				if player_team then
 					if player_team == team then
 						online = true
