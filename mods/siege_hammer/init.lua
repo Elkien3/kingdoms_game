@@ -168,16 +168,20 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 					end
 				end
 				if realNode then
-					if realNode.sounds.dug then
-						minetest.sound_play("default_tool_breaks", {pos = pos, gain = 2.1,max_hear_distance = 127})
+					if realNode.sounds then
+						if realNode.sounds.dug then
+							minetest.sound_play("default_tool_breaks", {pos = pos, gain = 2.1,max_hear_distance = 127})
+						end
 					end
 				end
 				return itemstack
 			end
 		end
 		if realNode then
-			if realNode.sounds.dug then
-				minetest.sound_play(realNode.sounds.dug.name, {pos = pos, gain = 1.6,max_hear_distance = 95})
+			if realNode.sounds then
+				if realNode.sounds.dug then
+					minetest.sound_play(realNode.sounds.dug.name, {pos = pos, gain = 1.6,max_hear_distance = 95})
+				end
 			end
 		end
 		return itemstack
