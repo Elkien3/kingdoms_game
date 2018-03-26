@@ -1,4 +1,5 @@
 material_Strengths = {}
+siegehammer_Damage = 1
 
 minetest.register_chatcommand("node_strength", {
 	params = "<node_name>",
@@ -141,8 +142,7 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 						tmp.fields.siege_health = material_Strengths[realNode.name]
 					end
 					-- Damage code.
-					-- Remove 0.1 hit point.
-					tmp.fields.siege_health = tmp.fields.siege_health - 0.1
+					tmp.fields.siege_health = tmp.fields.siege_health - siegehammer_Damage
 					health = tmp.fields.siege_health
 					meta:from_table(tmp)
 				end
