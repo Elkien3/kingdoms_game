@@ -1,4 +1,8 @@
 material_Strengths = {}
+black_list = {"ctf_flag:flag","ctf_flag:flag_captured_top"}
+for color, _ in pairs(ctf.flag_colors) do
+	table.insert(black_list,"ctf_flag:flag_top_"..color)
+end
 siegehammer_Damage = 1
 
 minetest.register_chatcommand("node_strength", {
@@ -97,6 +101,12 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 			local name = user:get_player_name()
 			local team = ctf.get_territory_owner(pos)
 			local p_team = ctf.player(name).team
+			for i in pairs(black_list) do
+				if black_list[i] == node.name then
+					minetest.chat_send_player(name, "None siegeable block.")
+					return itemstack
+				end
+			end
 			if not team then
 				minetest.chat_send_player(name, "This only works in protected areas.")
 				return itemstack
@@ -139,17 +149,13 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 			if meta then
 				local tmp = meta:to_table()
 				if tmp then
-					if tmp.fields then
-						if not tmp.fields.siege_health then
-							tmp.fields.siege_health = material_Strengths[realNode.name]
-						end
-						-- Damage code.
-						if tmp.fields.siege_health then
-							tmp.fields.siege_health = tmp.fields.siege_health - damage_number
-							health = tmp.fields.siege_health
-							meta:from_table(tmp)
-						end
+					if not tmp.fields.siege_health then
+						tmp.fields.siege_health = material_Strengths[realNode.name]
 					end
+					-- Damage code.
+					tmp.fields.siege_health = tmp.fields.siege_health - damage_number
+					health = tmp.fields.siege_health
+					meta:from_table(tmp)
 				end
 			end
 			if health <= 0 then
