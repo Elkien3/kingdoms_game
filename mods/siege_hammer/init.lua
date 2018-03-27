@@ -84,6 +84,7 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 		local pos = nil
 		local node = nil
 		local realNode = nil
+		local damage_number = siegehammer_Damage
 		if pointed_thing.under then
 			pos = pointed_thing.under
 		end
@@ -138,13 +139,17 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 			if meta then
 				local tmp = meta:to_table()
 				if tmp then
-					if not tmp.fields.siege_health then
-						tmp.fields.siege_health = material_Strengths[realNode.name]
+					if tmp.fields then
+						if not tmp.fields.siege_health then
+							tmp.fields.siege_health = material_Strengths[realNode.name]
+						end
+						-- Damage code.
+						if tmp.fields.siege_health then
+							tmp.fields.siege_health = tmp.fields.siege_health - damage_number
+							health = tmp.fields.siege_health
+							meta:from_table(tmp)
+						end
 					end
-					-- Damage code.
-					tmp.fields.siege_health = tmp.fields.siege_health - siegehammer_Damage
-					health = tmp.fields.siege_health
-					meta:from_table(tmp)
 				end
 			end
 			if health <= 0 then
