@@ -224,7 +224,7 @@ minetest.register_entity(
          return serializeContents(self.contents)
       end,
 
-    on_punch = function(self, puncher, timeSinceLastPunch, toolCaps, dir)
+    --[[on_punch = function(self, puncher, timeSinceLastPunch, toolCaps, dir)
 	  	local name = puncher:get_player_name()
 		if puncher:get_player_control().sneak then
 			if entityInv:is_empty(self.id) then
@@ -248,7 +248,7 @@ minetest.register_entity(
 				self.owner = puncher
 			end
 		end
-	end,
+	end,--]]
 
 
       on_rightclick = function(self, player)
