@@ -224,7 +224,7 @@ minetest.register_entity(
          return serializeContents(self.contents)
       end,
 
-    --[[on_punch = function(self, puncher, timeSinceLastPunch, toolCaps, dir)
+    on_punch = function(self, puncher, timeSinceLastPunch, toolCaps, dir)
 	  	local name = puncher:get_player_name()
 		if puncher:get_player_control().sneak then
 			if entityInv:is_empty(self.id) then
@@ -240,7 +240,7 @@ minetest.register_entity(
 				self.object:remove()
 				playerInv:add_item("main", newItem)
 			end
-		else
+		end--[[else
 			if player_backpack[name] == nil then
 				self.object:set_attach(puncher, "", {x=0,y=0,z=-2.5}, {x=0,y=0,z=0})
 				self.object:setpos(puncher:getpos())
