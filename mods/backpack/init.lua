@@ -247,8 +247,8 @@ minetest.register_entity(
 				player_backpack[name] = self
 				self.owner = puncher
 			end
-		end
-	end,--]]
+		end--]]
+	end,
 
 
       on_rightclick = function(self, player)
