@@ -299,7 +299,7 @@ minetest.after(10, function() --originally 2.5
 			if minetest.setting_getbool("enable_damage") then
 			 local h = tonumber(hud.hunger[name])
 			 local hp = player:get_hp()
-			 if HUD_ENABLE_HUNGER and timer > 4 then
+			 if HUD_ENABLE_HUNGER and timer > 20 then
 				-- heal player by 1 hp if not dead and saturation is > 15 (of 30)
 				if h > 15 and hp > 0 and hud.air[name] > 0 then
 					player:set_hp(hp+1)
