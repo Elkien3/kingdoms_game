@@ -290,7 +290,7 @@ minetest.after(10, function() --originally 2.5
 	 main_timer = main_timer + dtime
 	 timer = timer + dtime
 	 timer2 = timer2 + dtime
-		if main_timer > HUD_TICK or timer > 4 or timer2 > HUD_HUNGER_TICK then
+		if main_timer > HUD_TICK or timer > 10 or timer2 > HUD_HUNGER_TICK then
 		 if main_timer > HUD_TICK then main_timer = 0 end
 		 for _,player in ipairs(minetest.get_connected_players()) do
 			local name = player:get_player_name()
@@ -299,7 +299,7 @@ minetest.after(10, function() --originally 2.5
 			if minetest.setting_getbool("enable_damage") then
 			 local h = tonumber(hud.hunger[name])
 			 local hp = player:get_hp()
-			 if HUD_ENABLE_HUNGER and timer > 4 then
+			 if HUD_ENABLE_HUNGER and timer > 10 then
 				-- heal player by 1 hp if not dead and saturation is > 15 (of 30)
 				if h > 15 and hp > 0 and hud.air[name] > 0 then
 					player:set_hp(hp+1)
@@ -333,7 +333,7 @@ minetest.after(10, function() --originally 2.5
 		 end
 		
 		end
-		if timer > 4 then timer = 0 end
+		if timer > 10 then timer = 0 end
 		if timer2 > HUD_HUNGER_TICK then timer2 = 0 end
 	end)
 end)
