@@ -29,17 +29,17 @@ factions.register_command = function(cmd_name, cmd, ignore_param_count)
         infaction = true,
         description = "This command has no description.",
         run = function(self, player, argv)
-            if self.global_privileges then
-                local tmp = {}
-                for i in ipairs(self.global_privileges) do
-                    tmp[self.global_privileges[i]] = true
-                end
-                local bool, missing_privs = minetest.check_player_privs(player, tmp)
-                if not bool then
-                    send_error(player, "Unauthorized.")
-                    return false
-                end
-            end
+            --if self.global_privileges then
+            --    local tmp = {}
+            --    for i in ipairs(self.global_privileges) do
+            --        tmp[self.global_privileges[i]] = true
+            --    end
+            --    local bool, missing_privs = minetest.check_player_privs(player, tmp)
+            --    if not bool then
+            --        send_error(player, "Unauthorized.")
+            --        return false
+            --    end
+            --end
             -- checks argument formats
             local args = {
                 factions = {},
