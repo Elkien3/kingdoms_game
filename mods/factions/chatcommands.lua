@@ -131,7 +131,7 @@ end
 
 local init_commands
 init_commands = function()
-	
+	--[[
 	minetest.register_privilege("faction_user",
 		{
 			description = "this user is allowed to interact with faction mod",
@@ -139,7 +139,7 @@ init_commands = function()
 		}
 	)
 	
-	
+	--]]
 	minetest.register_privilege("faction_admin",
 		{
 			description = "this user is allowed to create or delete factions",
@@ -151,7 +151,7 @@ init_commands = function()
 		{
 			params = "<cmd> <parameter 1> .. <parameter n>",
 			description = "faction administration functions",
-			privs = { interact=true,faction_user=true },
+			privs = { interact=true,}, --faction_user=true },
 			func = factions_chat.cmdhandler,
 		}
 	)
@@ -161,7 +161,7 @@ init_commands = function()
 		{
 			params = "<command> parameters",
 			description = "Factions commands. Type /f help for available commands.",
-            privs = { interact=true,faction_user=true},
+            privs = { interact=true,},--faction_user=true},
 			func = factions_chat.cmdhandler,
 		}
 	)
