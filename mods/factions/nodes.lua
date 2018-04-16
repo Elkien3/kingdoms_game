@@ -23,7 +23,7 @@ function factions.can_use_chest(pos, player)
     end
     return player_faction and (parcel_faction.name == player_faction.name)
 end
-
+--[[
 minetest.register_node("factions:chest", {
     tiles = {"factions_chest_top.png", "factions_chest_top.png",
              "factions_chest_side.png", "factions_chest_side.png",
@@ -68,4 +68,4 @@ minetest.register_craft({
     type = "shapeless",
     recipe = {"default:chest_locked", "default:steel_ingot"}
 })
-
+--]]
