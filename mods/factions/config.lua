@@ -24,5 +24,5 @@ config.rank_name_max_length = tonumber(minetest.setting_get("rank_name_max_lengt
 config.maximum_faction_inactivity = tonumber(minetest.setting_get("maximum_faction_inactivity")) or 604800
 config.power = tonumber(minetest.setting_get("power")) or 2
 config.maxpower = tonumber(minetest.setting_get("maxpower")) or 2
-config.power_per_banner = minetest.settings:get_bool("power_per_banner") or 10.
+config.power_per_banner = minetest.settings:get("power_per_banner") or 10
 config.attack_parcel = minetest.settings:get_bool("attack_parcel") or false
