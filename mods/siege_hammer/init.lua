@@ -84,7 +84,7 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 		},
 		damage_groups = {fleshy=5},
 	},
-	on_use = function(itemstack, user, pointed_thing)
+	--[[on_use = function(itemstack, user, pointed_thing)
 		local pos = nil
 		local node = nil
 		local realNode = nil
@@ -196,16 +196,16 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 			end
 		end
 		return itemstack
-	end,
+	end,--]]
 	sound = {breaks = "default_tool_breaks"}
 })
-
+--[[
 minetest.register_craft({
 	output = "siege_hammer:siege_hammer",
 	recipe = {
                 {'default:obsidian','default:obsidian','default:obsidian'},
                 {'default:obsidian','default:obsidian','default:obsidian'},
                 {'',                   'default:stick',      ''                   } }
-})
+})--]]
 
 cac_Material_Strengths()
