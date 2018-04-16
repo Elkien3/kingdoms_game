@@ -608,7 +608,7 @@ end
 --??????????????
 
 function factions.get_parcel_pos(pos)
-    return math.floor(pos.x / 16.)..","..math.floor(pos.z / 16.)
+    return math.floor(pos.x / 32.)..","..math.floor(pos.z / 32.)
 end
 
 function factions.get_player_faction(playername)
