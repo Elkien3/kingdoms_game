@@ -264,6 +264,7 @@ factions.register_command("leave", {
     description = "Leave your faction.",
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
+		minetest.chat_send_player(player, "You have left your Faction")
         faction:remove_player(player)
         return true
     end
@@ -279,6 +280,7 @@ factions.register_command("kick", {
         local victim_faction = factions.get_player_faction(victim:get_player_name())
         if victim_faction and victim:get_player_name() ~= faction.leader then -- can't kick da king
             faction:remove_player(victim:get_player_name())
+			minetest.chat_send_player(player, "Kicked player '"..victim:get_player_name().."'.")
             return true
         elseif not victim_faction then
             send_error(player, victim:get_player_name().." is not in your faction.")
@@ -305,6 +307,7 @@ factions.register_command("create", {
         if factions.can_create_faction(factionname) then
             new_faction = factions.new_faction(factionname, nil)
             new_faction:add_player(player, new_faction.default_leader_rank)
+			minetest.chat_send_player(player, "Created Faction.")
             return true
         else
             send_error(player, "Faction cannot be created.")
@@ -325,6 +328,7 @@ factions.register_command("join", {
                 faction:remove_player(player)
             end
             new_faction:add_player(player)
+			minetest.chat_send_player(player, "Joined Faction.")
         else
             send_error(player, "You cannot join this faction.")
             return false
@@ -338,6 +342,7 @@ factions.register_command("disband", {
     description = "Disband your faction.",
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
+		minetest.chat_send_player(player, "Disbanded Faction.")
         faction:disband()
         return true
     end
@@ -380,6 +385,7 @@ factions.register_command("invite", {
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
         faction:invite_player(args.players[1]:get_player_name())
+		minetest.chat_send_player(player, "Invite Sent.")
         return true
     end
 },false)
@@ -391,6 +397,7 @@ factions.register_command("uninvite", {
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
         faction:revoke_invite(args.players[1]:get_player_name())
+		minetest.chat_send_player(player, "Invite canceled.")
         return true
     end
 },false)
@@ -401,6 +408,7 @@ factions.register_command("delete", {
     infaction = false,
     description = "Delete a faction.",
     on_success = function(player, faction, pos, parcelpos, args)
+		minetest.chat_send_player(player, "Deleted Faction.")
         args.factions[1]:disband()
         return true
     end
@@ -550,7 +558,7 @@ factions.register_command("promote", {
     on_success = function(player, faction, pos, parcelpos, args)
         local rank = args.strings[1]
         if faction.ranks[rank] then
-            faction:promote(args.players[1]:get_player_name(), rank)
+            faction:promote(args.players[1], rank)
             return true
         else
             send_error(player, "The specified rank does not exist.")
@@ -723,7 +731,7 @@ factions.register_command("getspawn", {
 factions.register_command("whoin", {
     description = "Get all members of a faction.",
     infaction = false,
-    global_privileges = {"faction_admin"},
+    --global_privileges = {"faction_admin"},
     format = {"faction"},
     on_success = function(player, faction, pos, parcelpos, args)
         local msg = {}
@@ -738,7 +746,7 @@ factions.register_command("whoin", {
 factions.register_command("stats", {
     description = "Get stats of a faction.",
     infaction = false,
-    global_privileges = {"faction_admin"},
+    --global_privileges = {"faction_admin"},
     format = {"faction"},
     on_success = function(player, faction, pos, parcelpos, args)
         local f = args.factions[1]
@@ -750,7 +758,7 @@ factions.register_command("stats", {
 factions.register_command("seen", {
     description = "Check the last time a faction had a member logged in",
     infaction = false,
-    global_privileges = {"faction_admin"},
+    --global_privileges = {"faction_admin"},
     format = {"faction"},
     on_success = function(player, faction, pos, parcelpos, args)
         local lastseen = args.factions[1].last_logon
