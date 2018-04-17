@@ -277,16 +277,16 @@ factions.register_command("kick", {
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
         local victim = args.players[1]
-        local victim_faction = factions.get_player_faction(victim:get_player_name())
-        if victim_faction and victim:get_player_name() ~= faction.leader then -- can't kick da king
-            faction:remove_player(victim:get_player_name())
-			minetest.chat_send_player(player, "Kicked player '"..victim:get_player_name().."'.")
+        local victim_faction = factions.get_player_faction(victim)
+        if victim_faction and victim ~= faction.leader then -- can't kick da king
+            faction:remove_player(victim)
+			minetest.chat_send_player(player, "Kicked player '"..victim.."'.")
             return true
         elseif not victim_faction then
-            send_error(player, victim:get_player_name().." is not in your faction.")
+            send_error(player, victim.." is not in your faction.")
             return false
         else
-            send_error(player, victim:get_player_name().." cannot be kicked from your faction.")
+            send_error(player, victim.." cannot be kicked from your faction.")
             return false
         end
     end
@@ -384,7 +384,7 @@ factions.register_command("invite", {
     description = "Invite a player to your faction.",
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
-        faction:invite_player(args.players[1]:get_player_name())
+        faction:invite_player(args.players[1])
 		minetest.chat_send_player(player, "Invite Sent.")
         return true
     end
@@ -396,7 +396,7 @@ factions.register_command("uninvite", {
     description = "Revoke a player's invite.",
 	--global_privileges = {"faction_user"},
     on_success = function(player, faction, pos, parcelpos, args)
-        faction:revoke_invite(args.players[1]:get_player_name())
+        faction:revoke_invite(args.players[1])
 		minetest.chat_send_player(player, "Invite canceled.")
         return true
     end
@@ -664,7 +664,7 @@ factions.register_command("setleader", {
     global_privileges = {"faction_admin"},
     format = {"faction", "player"},
     on_success = function(player, faction, pos, parcelpos, args)
-        local playername = args.players[1]:get_player_name()
+        local playername = args.players[1]
         local playerfaction = factions.get_player_faction(playername)
         local targetfaction = args.factions[1]
         if playerfaction.name ~= targetfaction.name then
