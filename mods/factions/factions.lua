@@ -251,7 +251,7 @@ end
 function factions.Faction.check_players_in_faction(self)
 	local i = 0
 	if self.players then
-		for self.players
+		for self.players do
 			i = i + 1
 		end
 	end
