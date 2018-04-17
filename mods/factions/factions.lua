@@ -249,8 +249,9 @@ function factions.Faction.add_player(self, player, rank)
 end
 
 function factions.Faction.check_players_in_faction(self)
-	local players = #self.players
-	if players < 1 then
+	local factionRef = factions.get_faction(self)
+	local players = #factionRef.players
+	if players and players < 1 then
 		self:disband("Zero players on faction.")
 	end
 end
