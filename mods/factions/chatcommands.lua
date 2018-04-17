@@ -559,6 +559,7 @@ factions.register_command("promote", {
         local rank = args.strings[1]
         if faction.ranks[rank] then
             faction:promote(args.players[1], rank)
+			minetest.chat_send_player(player, "Promoted "..args.players[1] .. " to " .. rank .. "!")
             return true
         else
             send_error(player, "The specified rank does not exist.")
