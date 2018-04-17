@@ -77,7 +77,7 @@ factions.register_command = function(cmd_name, cmd, ignore_param_count)
                         table.insert(args.factions, fac)
                     end
                 elseif argtype == "player" then
-                    local pl = minetest.get_player_by_name(arg)
+                    local pl = arg--minetest.get_player_by_name(arg)
                     if not pl and not factions.players[arg] then
                         send_error(player, "Player is not online.")
                         return false
