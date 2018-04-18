@@ -233,6 +233,14 @@ minetest.register_chatcommand("grief_check", {
 		local seconds = (hours*60)*60
 		minetest.rollback_punch_callbacks[name] = function(pos, node, puncher)
 			local name = puncher:get_player_name()
+			if ctf.get_territory_owner(pos) then
+				if minetest.is_protected(pos, name) then
+					return
+				end
+			else
+				minetest.chat_send_player(name, "You can only check on an owned area.")
+				return
+			end
 			minetest.chat_send_player(name, "Checking " .. minetest.pos_to_string(pos) .. "...")
 			local actions = minetest.rollback_get_node_actions(pos, range, seconds, limit)			
 			if not actions then
