@@ -654,7 +654,7 @@ minetest.register_craft({
 minetest.register_craftitem("protector:tester", {
 	description = "Protection tester",
 	inventory_image = "protector_stick.png",
-	on_use = function(itemstack, user, pointed_thing)
+	--[[on_use = function(itemstack, user, pointed_thing)
 		if pointed_thing.type ~= "node" then
 			return
 		end
@@ -665,7 +665,7 @@ minetest.register_craftitem("protector:tester", {
 			minetest.chat_send_player(user:get_player_name(), "This area is not owned")
 		end
 		return
-	end,
+	end,--]]
 })
 
 minetest.register_craft({
