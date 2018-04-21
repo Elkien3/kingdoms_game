@@ -494,7 +494,7 @@ function factions.Faction.attack_parcel(self, parcelpos)
 		local attacked_faction = factions.get_parcel_faction(parcelpos)
 		if attacked_faction then
 			if self.power < factions.power_per_attack then
-				self:broadcast("You do not have enough power to attack!!"
+				self:broadcast("You do not have enough power to attack!!")
 				return
 			end
 			self.power = self.power - factions.power_per_attack
