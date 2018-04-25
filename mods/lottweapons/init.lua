@@ -3,7 +3,7 @@
 minetest.register_tool("lottweapons:septer", {
 	description = "Septer",
 	inventory_image = "lottweapons_septer.png",
-	--[[on_use = function(itemstack, user, pointed_thing)
+	on_use = function(itemstack, user, pointed_thing)
 		local userpos = user:get_pos()
 		local closeflagdistance = nil
 		local closeflag = nil
@@ -26,7 +26,7 @@ minetest.register_tool("lottweapons:septer", {
 		end
 		minetest.chat_send_player(user:get_player_name(), "Closest flag is "..tostring(math.floor(closeflagdistance)).." blocks away. (Owned by "..closeflag.team..")")
 		return
-	end,--]]
+	end,
 	tool_capabilities = {
 		full_punch_interval = 2,
 		max_drop_level=1,
