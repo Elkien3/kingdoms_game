@@ -10,5 +10,8 @@
 #    . -- default_character_v2; used in:
 #    .      -- minetest_game after 25 nov 2016
 #    .      -- 3d_armor after 27 nov 2016	(overrides model from minetest_game)
-player_model_version (Version of player model) enum default_character_v2 default_character_v1,default_character_v2
+#    . -- default_character_v3; used in:
+#    .      -- minetest_game after 22 jul 2017
+#    .      -- 3d_armor after ????????????????	(overrides model from minetest_game)
+player_model_version (Version of player model) enum default_character_v2 default_character_v1,default_character_v2,default_character_v3
 
