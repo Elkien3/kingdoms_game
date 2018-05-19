@@ -73,7 +73,7 @@ interact.s4_submit = "Submit!"
 
 --What to do on a wrong quiz.
 --Options are "kick" "ban" "reshow" "rules" and "nothing"
-interact.on_wrong_quiz = "nothing"
+interact.on_wrong_quiz = "reshow"
 --The message to send the player if reshow is the on_wrong_quiz option.
 interact.quiz_try_again_msg = "Have another go."
 --The message sent to the player if rules is the on_wrong_quiz option.
