@@ -11,7 +11,7 @@ interact.default_language = "english"
 --Make sure these agree with your answers!
 
 interact.quiz1 = true
-interact.quiz2 = false
+interact.quiz2 = true
 interact.quiz3 = false
 interact.quiz4 = true
 interact.quiz_multi = 3
