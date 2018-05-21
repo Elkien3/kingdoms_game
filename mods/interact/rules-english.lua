@@ -2,7 +2,10 @@
 local language = "english" --must be all lowercase
 local yes = "Yes."
 local no = "No."
-rule_table[language] = {rules = [[
+rule_table[language] = {
+secondaryname = nil, --secondary name, usually the language name in english, or in the actual language.
+
+rules = [[
 Rules:
 
 1. PVP is allowed. Don't Combat log!

@@ -1,6 +1,8 @@
 rule_table = {}
 rule_language = {}
 dofile(minetest.get_modpath("interact") .. "/rules-english.lua") --I put the rules in their own file so that they don't get lost/overlooked!
+dofile(minetest.get_modpath("interact") .. "/rules-russian.lua")
+dofile(minetest.get_modpath("interact") .. "/rules-deutsch.lua")
 dofile(minetest.get_modpath("interact") .. "/config.lua")
 
 local rule1 = 0
@@ -13,6 +15,9 @@ local all_languages = interact.default_language
 for k in pairs(rule_table) do
 	if k ~= interact.default_language then
 		all_languages = all_languages..", "..k
+		if rule_table[k].secondaryname then
+			all_languages = all_languages.." ("..rule_table[k].secondaryname..")"
+		end
 	end
 end
 
@@ -206,16 +211,16 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		rule4 = 0
 		multi = 0
 		if interact.on_wrong_quiz == "kick" then
-			minetest.kick_player(name, interact.wrong_quiz_kick_msg)
+			minetest.kick_player(name, rule_table[language].wrong_quiz_kick_msg)
 		elseif interact.on_wrong_quiz == "ban" then
 			minetest.ban_player(name)
 		elseif interact.on_wrong_quiz == "reshow" then
-			minetest.chat_send_player(name, interact.quiz_try_again_msg)
+			minetest.chat_send_player(name, rule_table[language].quiz_try_again_msg)
 			minetest.after(1, function()
 				minetest.show_formspec(name, "interact_quiz", make_formspec4(player, language))
 			end)
 		elseif interact.on_wrong_quiz == "rules" then
-			minetest.chat_send_player(name, interact.quiz_rules_msg)
+			minetest.chat_send_player(name, rule_table[language].quiz_rules_msg)
 			minetest.after(1, function()
 				minetest.show_formspec(name, "interact_rules", make_formspec3(player, language))
 			end)
