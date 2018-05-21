@@ -105,7 +105,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 		return
 	elseif fields.yes then
 		if interact.grief_ban ~= true then
-			minetest.kick_player(name, rule_table[language].msg_grief)
+			--minetest.kick_player(name, rule_table[language].msg_grief)
+			minetest.chat_send_player(name, rule_table[language].msg_grief)
 		else
 			minetest.ban_player(name)
 		end

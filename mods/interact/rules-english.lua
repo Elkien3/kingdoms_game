@@ -45,8 +45,8 @@ msg_grief = "A *lot* of griefing is looked down upon, though some war destructio
 
 --The second screen--
 --Lines one and two. Make sure each line is less than 70 characters, or they will run off the screen.
-s2_l1 = "So, do you want interact, or do you just want to look around",
-s2_l2 = "the server?",
+s2_l1 = "So, do you want interact, or do you just want to look around the server?",
+s2_l2 = "",
 --The buttons. These ones can have a maximum of 26 characters.
 s2_b1 = "Yes, I want interact!",
 s2_b2 = "I just want to look round.",
