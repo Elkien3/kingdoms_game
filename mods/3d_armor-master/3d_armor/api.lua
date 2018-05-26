@@ -4,6 +4,7 @@ local S = armor_i18n.gettext
 local skin_previews = {}
 local use_player_monoids = minetest.global_exists("player_monoids")
 local use_armor_monoid = minetest.global_exists("armor_monoid")
+local use_pova_mod = minetest.get_modpath("pova")
 local armor_def = setmetatable({}, {
 	__index = function()
 		return setmetatable({
@@ -269,7 +270,8 @@ armor.set_player_armor = function(self, player)
 		change[group] = groups[group] / base
 	end
 	for _, attr in pairs(self.attributes) do
-		self.def[name][attr] = attributes[attr]
+		local mult = attr == "heal" and self.config.heal_multiplier or 1
+		self.def[name][attr] = attributes[attr] * mult
 	end
 	for _, phys in pairs(self.physics) do
 		self.def[name][phys] = physics[phys]
@@ -286,6 +288,14 @@ armor.set_player_armor = function(self, player)
 			"3d_armor:physics")
 		player_monoids.gravity:add_change(player, physics.gravity,
 			"3d_armor:physics")
+	elseif use_pova_mod then
+		-- only add the changes, not the default 1.0 for each physics setting
+		pova.add_override(name, "3d_armor", {
+			speed = physics.speed - 1,
+			jump = physics.jump - 1,
+			gravity = physics.gravity - 1,
+		})
+		pova.do_override(player)
 	else
 		player:set_physics_override(physics)
 	end
@@ -377,7 +387,6 @@ armor.damage = function(self, player, index, stack, use)
 	self:run_callbacks("on_damage", player, index, stack)
 	self:set_inventory_stack(player, index, stack)
 	if stack:get_count() == 0 then
-		self:run_callbacks("on_unequip", player, index, old_stack)
 		self:run_callbacks("on_destroy", player, index, old_stack)
 		self:set_player_armor(player)
 	end
@@ -428,6 +437,14 @@ armor.get_armor_formspec = function(self, name, listring)
 	return formspec
 end
 
+armor.get_element = function(self, item_name)
+	for _, element in pairs(armor.elements) do
+		if minetest.get_item_group(item_name, "armor_"..element) > 0 then
+			return element
+		end
+	end
+end
+
 armor.serialize_inventory_list = function(self, list)
 	local list_table = {}
 	for _, stack in ipairs(list) do
@@ -446,37 +463,64 @@ armor.deserialize_inventory_list = function(self, list_string)
 end
 
 armor.load_armor_inventory = function(self, player)
-	local msg = "[load_armor_inventory]"
-	local name = player:get_player_name()
+	local name, inv = self:get_valid_player(player, "[load_armor_inventory]")
 	if not name then
-		minetest.log("warning", S("3d_armor: Player name is nil @1", msg))
-		return
-	end
-	local armor_inv = minetest.get_inventory({type="detached", name=name.."_armor"})
-	if not armor_inv then
-		minetest.log("warning", S("3d_armor: Detached armor inventory is nil @1", msg))
 		return
 	end
 	local armor_list_string = player:get_attribute("3d_armor_inventory")
 	if armor_list_string then
-		armor_inv:set_list("armor", self:deserialize_inventory_list(armor_list_string))
+		inv:set_list("armor",
+			self:deserialize_inventory_list(armor_list_string))
 		return true
 	end
 end
 
 armor.save_armor_inventory = function(self, player)
-	local msg = "[save_armor_inventory]"
-	local name = player:get_player_name()
+	local name, inv = self:get_valid_player(player, "[save_armor_inventory]")
 	if not name then
-		minetest.log("warning", S("3d_armor: Player name is nil @1", msg))
 		return
 	end
-	local armor_inv = minetest.get_inventory({type="detached", name=name.."_armor"})
-	if not armor_inv then
-		minetest.log("warning", S("3d_armor: Detached armor inventory is nil @1", msg))
-		return
+	-- Workaround for detached inventory swap exploit
+	local armor_prev = {}
+	local armor_list_string = player:get_attribute("3d_armor_inventory")
+	if armor_list_string then
+		local armor_list = self:deserialize_inventory_list(armor_list_string)
+		for i, stack in ipairs(armor_list) do
+			if stack:get_count() > 0 then
+				armor_prev[stack:get_name()] = i
+			end
+		end
 	end
-	player:set_attribute("3d_armor_inventory", self:serialize_inventory_list(armor_inv:get_list("armor")))
+	local elements = {}
+	local player_inv = player:get_inventory()
+	for i = 1, 6 do
+		local stack = inv:get_stack("armor", i)
+		if stack:get_count() > 0 then
+			local item = stack:get_name()
+			local element = self:get_element(item)
+			if element and not elements[element] then
+				if armor_prev[item] then
+					armor_prev[item] = nil
+				else
+					-- Item was not in previous inventory
+					armor:run_callbacks("on_equip", player, i, stack)
+				end
+				elements[element] = true;
+			else
+				inv:remove_item("armor", stack)
+				if player_inv and player_inv:room_for_item("main", stack) then
+					player_inv:add_item("main", stack)
+				end
+			end
+		end
+	end
+	for item, i in pairs(armor_prev) do
+		local stack = ItemStack(item)
+		-- Previous item is not in current inventory
+		armor:run_callbacks("on_unequip", player, i, stack)
+	end
+	player:set_attribute("3d_armor_inventory",
+		self:serialize_inventory_list(inv:get_list("armor")))
 end
 
 armor.update_inventory = function(self, player)
@@ -484,19 +528,11 @@ armor.update_inventory = function(self, player)
 end
 
 armor.set_inventory_stack = function(self, player, i, stack)
-	local msg = "[set_inventory_stack]"
-	local name = player:get_player_name()
-	if not name then
-		minetest.log("warning", S("3d_armor: Player name is nil @1", msg))
-		return
+	local name, inv = self:get_valid_player(player, "[set_inventory_stack]")
+	if inv then
+		inv:set_stack("armor", i, stack)
+		self:save_armor_inventory(player)
 	end
-	local armor_inv = minetest.get_inventory({type="detached", name=name.."_armor"})
-	if not armor_inv then
-		minetest.log("warning", S("3d_armor: Detached armor inventory is nil @1", msg))
-		return
-	end
-	armor_inv:set_stack("armor", i, stack)
-	self:save_armor_inventory(player)
 end
 
 armor.get_valid_player = function(self, player, msg)

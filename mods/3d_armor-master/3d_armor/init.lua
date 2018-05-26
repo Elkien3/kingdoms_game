@@ -118,33 +118,30 @@ local function init_player_armor(player)
 	local armor_inv = minetest.create_detached_inventory(name.."_armor", {
 		on_put = function(inv, listname, index, stack, player)
 			armor:save_armor_inventory(player)
-			armor:run_callbacks("on_equip", player, index, stack)
 			armor:set_player_armor(player)
 		end,
 		on_take = function(inv, listname, index, stack, player)
 			armor:save_armor_inventory(player)
-			armor:run_callbacks("on_unequip", player, index, stack)
 			armor:set_player_armor(player)
 		end,
 		on_move = function(inv, from_list, from_index, to_list, to_index, count, player)
 			armor:save_armor_inventory(player)
 			armor:set_player_armor(player)
 		end,
-		allow_put = function(inv, listname, index, stack, player)
-			local def = stack:get_definition() or {}
-			local allowed = 0
-			for _, element in pairs(armor.elements) do
-				if def.groups["armor_"..element] then
-					allowed = 1
-					for i = 1, 6 do
-						local item = inv:get_stack("armor", i):get_name()
-						if minetest.get_item_group(item, "armor_"..element) > 0 then
-							return 0
-						end
-					end
+		allow_put = function(inv, listname, index, put_stack, player)
+			local element = armor:get_element(put_stack:get_name())
+			if not element then
+				return 0
+			end
+			for i = 1, 6 do
+				local stack = inv:get_stack("armor", i)
+				local def = stack:get_definition() or {}
+				if def.groups and def.groups["armor_"..element]
+						and i ~= index then
+					return 0
 				end
 			end
-			return allowed
+			return 1
 		end,
 		allow_take = function(inv, listname, index, stack, player)
 			return stack:get_count()
@@ -166,7 +163,9 @@ local function init_player_armor(player)
 	end
 	for i=1, 6 do
 		local stack = armor_inv:get_stack("armor", i)
-		armor:run_callbacks("on_equip", player, i, stack)
+		if stack:get_count() > 0 then
+			armor:run_callbacks("on_equip", player, i, stack)
+		end
 	end
 	armor.def[name] = {
 		init_time = minetest.get_gametime(),
@@ -269,10 +268,10 @@ if armor.config.drop == true or armor.config.destroy == true then
 			local stack = armor_inv:get_stack("armor", i)
 			if stack:get_count() > 0 then
 				table.insert(drop, stack)
-				armor:set_inventory_stack(player, i, nil)
-				armor:run_callbacks("on_unequip", player, i, stack)
+				armor_inv:set_stack("armor", i, nil)
 			end
 		end
+		armor:save_armor_inventory(player)
 		armor:set_player_armor(player)
 		local pos = player:getpos()
 		if pos and armor.config.destroy == false then
@@ -323,7 +322,6 @@ minetest.register_on_player_hpchange(function(player, hp_change)
 		local name = player:get_player_name()
 		if name then
 			local heal = armor.def[name].heal
-			heal = heal * armor.config.heal_multiplier
 			if heal >= math.random(100) then
 				hp_change = 0
 			end
