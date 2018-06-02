@@ -100,17 +100,18 @@ minetest.after(CLEANUP_PERIOD__S, cleanInventory)
 
 dropbackpack = function(player)
 	local player = player
-		local name = player:get_player_name()
-		if player_backpack[name] then
+	local name = player:get_player_name()
+	if player_backpack[name] then
 		local pos = player:getpos()
 		local pack = player_backpack[name]
 		local obj = pack.object
 		pos.y = pos.y + 0.4
 		pack.owner = nil
 		obj:set_detach()
-		local addnewentity = rezEntity(nil, pos, player, pack.contents)
-		if obj:remove() then
-			addnewentity()
+		idSet[pack] = nil
+		obj:remove()
+		if idSet[pack] == nil then
+			local addnewentity = rezEntity(nil, pos, player, pack.contents)
 		end
 		player_backpack[name] = nil
 	end
@@ -241,7 +242,7 @@ minetest.register_entity(
 				playerInv:add_item("main", newItem)
 			end
 		else
-			if player_backpack[name] == nil then
+			if player_backpack[name] == nil or not self.owner:is_player() then
 				self.object:set_attach(puncher, "", {x=0,y=0,z=-2.5}, {x=0,y=0,z=0})
 				self.object:setpos(puncher:getpos())
 				player_backpack[name] = self
