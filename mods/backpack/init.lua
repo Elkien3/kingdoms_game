@@ -105,14 +105,15 @@ dropbackpack = function(player)
 		local pos = player:getpos()
 		local pack = player_backpack[name]
 		local obj = pack.object
+		local contents = pack.contents
 		pos.y = pos.y + 0.4
 		pack.owner = nil
 		obj:set_detach()
-		idSet[pack] = nil
+		for i = 1, BAG_WIDTH*BAG_HEIGHT do
+            pack.contents[#pack.contents+1] = ItemStack(nil)
+        end
 		obj:remove()
-		if idSet[pack] == nil then
-			local addnewentity = rezEntity(nil, pos, player, pack.contents)
-		end
+		rezEntity(nil, pos, player, contents)
 		player_backpack[name] = nil
 	end
 end
