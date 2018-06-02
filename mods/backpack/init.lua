@@ -432,7 +432,7 @@ minetest.register_tool(
       wield_image = "inventory_plus_backpack.png",
       stack_max = 1,
 
-      --[[on_place = function(stack, player, pointedThing)
+      on_place = function(stack, player, pointedThing)
          local pos = pointedThing and pointedThing.under
          local node = pos and minetest.env:get_node(pos)
          local nodeType = node and minetest.registered_nodes[node.name]
@@ -448,7 +448,7 @@ minetest.register_tool(
 
       on_drop = function(stack, player, pos)
          return rezEntity(stack, pos, player)
-      end--]]
+      end
 
       -- Eventually add on_use(stack, player, pointedThing) which actually
       --    opens the bag from player inventory; trick is, has to track whether
