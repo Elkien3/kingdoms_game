@@ -116,9 +116,9 @@ dropbackpack = function(player)
 	end
 end
 
-minetest.register_on_leaveplayer(function(player)
-	dropbackpack(player)
-end)
+--minetest.register_on_leaveplayer(function(player)
+	--dropbackpack(player)
+--end)
 minetest.register_on_joinplayer(function(player)
 	inventory_plus.register_button(player,"backpack", "Backpack")
 end)
@@ -240,14 +240,14 @@ minetest.register_entity(
 				self.object:remove()
 				playerInv:add_item("main", newItem)
 			end
-		end--[[else
+		else
 			if player_backpack[name] == nil then
 				self.object:set_attach(puncher, "", {x=0,y=0,z=-2.5}, {x=0,y=0,z=0})
 				self.object:setpos(puncher:getpos())
 				player_backpack[name] = self
 				self.owner = puncher
 			end
-		end--]]
+		end
 	end,
 
 
@@ -426,8 +426,8 @@ end
 minetest.register_tool(
    "backpack:backpack",
    {
-      description = "Backpack (WORK IN PROGRESS, USE AT YOUR OWN RISK)",
-      groups = { bag = BAG_WIDTH*BAG_HEIGHT, flammable = 1 },
+      description = "Backpack",
+      groups = { bag = BAG_WIDTH*BAG_HEIGHT },
       inventory_image = "inventory_plus_backpack.png",
       wield_image = "inventory_plus_backpack.png",
       stack_max = 1,
