@@ -117,9 +117,9 @@ dropbackpack = function(player)
 	end
 end
 
---minetest.register_on_leaveplayer(function(player)
-	--dropbackpack(player)
---end)
+minetest.register_on_leaveplayer(function(player)
+	dropbackpack(player)
+end)
 minetest.register_on_joinplayer(function(player)
 	inventory_plus.register_button(player,"backpack", "Backpack")
 end)
