@@ -243,7 +243,12 @@ minetest.register_entity(
 				playerInv:add_item("main", newItem)
 			end
 		else
-			if player_backpack[name] == nil or not self.owner:is_player() then
+			local runit = false
+			if player_backpack[name] == nil then runit = true end
+			if self.owner then
+				if not self.owner:is_player() then runit = true end
+			end
+			if runit then
 				self.object:set_attach(puncher, "", {x=0,y=0,z=-2.5}, {x=0,y=0,z=0})
 				self.object:setpos(puncher:getpos())
 				player_backpack[name] = self
