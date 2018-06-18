@@ -40,6 +40,10 @@ local picbox = {
 	type = "fixed",
 	fixed = { -0.499, -0.499, 0.499, 0.499, 0.499, 0.499 - thickness }
 }
+local picbox2 = {
+	type="fixed",
+	fixed={-0.499, -0.499, -0.499, 0.499, -0.499+thickness, 0.499}
+}
 
 local current_version = "nopairs"
 local legacy = {}
@@ -121,8 +125,8 @@ minetest.register_node("painting:pic", {
 	sunlight_propagates = true,
 	paramtype = "light",
 	paramtype2 = "facedir",
-	node_box = picbox,
-	selection_box = picbox,
+	node_box = picbox2,
+	selection_box = picbox2,
 	groups = {snappy = 2, choppy = 2, oddly_breakable_by_hand = 2,
 		not_in_creative_inventory=1},
 
@@ -132,7 +136,8 @@ minetest.register_node("painting:pic", {
 	after_dig_node = function(pos, _, oldmetadata, digger)
 		--find and remove the entity
 		for _,e in pairs(minetest.get_objects_inside_radius(pos, 0.5)) do
-			if e:get_luaentity().name == "painting:picent" then
+			if e:get_luaentity().name == "painting:picent"
+			   or e:get_luaentity().name == "painting:picent_notupright" then
 				e:remove()
 			end
 		end
@@ -146,7 +151,7 @@ minetest.register_node("painting:pic", {
 			count = 1,
 			metadata = get_metastring(data)
 		})
-	end,	
+	end,
 	--copy pictures
 	on_punch = function(pos, node, player, pointed_thing)
 		local meta = minetest.get_meta(pos):to_table()
@@ -159,7 +164,7 @@ minetest.register_node("painting:pic", {
 			data = minetest.decompress(data)
 			print("tryed to copy old data, convert it to new format")
 		end
-		
+
 		--compare resulutions of picture and canvas the player wields
 		--if it isn't the same don't copy
 		local wname = player:get_wielded_item():get_name()
@@ -168,13 +173,13 @@ minetest.register_node("painting:pic", {
 		data_res = minetest.deserialize(data).res
 		if data_res == nil then return end
 		if res ~= data_res then
-			minetest.chat_send_player(player:get_player_name(), 
+			minetest.chat_send_player(player:get_player_name(),
 				"not same canvas type!")
 			return
 		end
 		--remove canvas, add picture
 		player:get_inventory():remove_item("main", {
-			name = wname, 
+			name = wname,
 			count = 1,
 		})
 		player:get_inventory():add_item("main", {
@@ -182,7 +187,7 @@ minetest.register_node("painting:pic", {
 			count = 1,
 			metadata = get_metastring(data)
 		})
-	end	
+	end
 })
 
 -- picture texture entity
@@ -215,6 +220,38 @@ minetest.register_entity("painting:picent", {
 			minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
 		end
 	end
+})
+
+minetest.register_entity("painting:picent_notupright", {
+	collisionbox = { 0, 0, 0, 0, 0, 0 },
+	visual = "cube",
+	visual_size = { x = 1, y = 0},
+	textures = { "white.png" },
+
+	on_activate = function(self, staticdata)
+		local pos = self.object:getpos()
+		local ldata = legacy.load_itemmeta(minetest.get_meta(pos):get_string("painting:picturedata"))
+		local data = minetest.deserialize(ldata)
+		-- for backwards compatiblity
+		if not data then
+			data = minetest.deserialize(minetest.decompress(ldata))
+			if data then
+				print("loaded old data, converted to new uncompressed")
+			end
+		end
+		-- end backwards compatiblity
+		if not data
+		or not data.grid then
+			return
+		end
+		self.object:set_properties{textures = { to_imagestring(data.grid, data.res) }}
+		if data.version ~= current_version then
+			minetest.log("legacy", "[painting] updating placed picture data")
+			data.version = current_version
+			data = minetest.serialize(data)
+			minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
+		end
+	end,
 })
 
 -- Figure where it hits the canvas, in fraction given position and direction.
@@ -328,8 +365,6 @@ minetest.register_entity("painting:paintent", {
 	end
 })
 
--- just pure magic
-local walltoface = {-1, -1, 1, 3, 0, 2}
 
 --paintedcanvas picture inventory item
 minetest.register_craftitem("painting:paintedcanvas", {
@@ -345,17 +380,23 @@ minetest.register_craftitem("painting:paintedcanvas", {
 			return
 		end
 
-		local under = pointed_thing.under
+		minetest.rotate_node(ItemStack("painting:pic"), placer, pointed_thing)
+		local dir = minetest.get_node(pointed_thing.above).param2/4
 
-		local wm = minetest.dir_to_wallmounted(vector.subtract(under, pos))
+		-- just pure magic
+		local walltoface = {0, 4, 5, 2, 3, 1}
+		dir = minetest.wallmounted_to_dir(walltoface[math.floor(dir)+1])
+		local wallmounted = minetest.dir_to_wallmounted(dir)
+		local yaw = {nil,          --  y
+			     nil,          -- -y
+			     math.pi/2,    -- x
+			     3/2*math.pi,          -- -x
+			     0,  -- z
+			     math.pi -- -z
+		}
+		yaw = yaw[wallmounted+1]
 
-		local fd = walltoface[wm + 1]
-		if fd == -1 then
-			return itemstack
-		end
-
-		minetest.add_node(pos, {name = "painting:pic", param2 = fd})
-
+		--rotation =
 		--save metadata
 		local data = legacy.load_itemmeta(itemstack:get_metadata())
 		-- for backwards compatiblity
@@ -373,18 +414,27 @@ minetest.register_craftitem("painting:paintedcanvas", {
 		minetest.get_meta(pos):set_string("painting:picturedata", get_metastring(data))
 
 		--add entity
-		local dir = dirs[fd]
-		local off = 0.5 - thickness - 0.01
-
+		local off = -(0.5 - thickness - 0.01)
 		pos.x = pos.x + dir.x * off
+		pos.y = pos.y + dir.y * off
 		pos.z = pos.z + dir.z * off
 
 		data = minetest.deserialize(data)
 		if data == nil then return ItemStack("") end
 
-		local obj = minetest.add_entity(pos, "painting:picent")
-		obj:set_properties{ textures = { to_imagestring(data.grid, data.res) }}
-		obj:setyaw(math.pi * fd / -2)
+		local img = to_imagestring(data.grid, data.res)
+		print(wallmounted)
+		if wallmounted == 0 then
+		    local obj = minetest.add_entity(pos, "painting:picent_notupright")
+		    obj:set_properties{ textures = { img}}
+		elseif wallmounted == 1 then
+		    local obj = minetest.add_entity(pos, "painting:picent_notupright")
+		    obj:set_properties{ textures = { "white.png", img}}
+		else
+		    local obj = minetest.add_entity(pos, "painting:picent")
+		    obj:set_properties{ textures = { img }}
+		    obj:setyaw(yaw)
+		end
 
 		return ItemStack("")
 	end
