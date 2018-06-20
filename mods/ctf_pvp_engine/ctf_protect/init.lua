@@ -24,7 +24,7 @@ function minetest.is_protected(pos, name)
 	else
 		local player = minetest.get_player_by_name(name)
 		if player then
-			-- yaw + 180°
+			--[[ yaw + 180°
 			local yaw = player:get_look_horizontal() + math.pi
 			if yaw > 2 * math.pi then
 				yaw = yaw - 2 * math.pi
@@ -33,7 +33,7 @@ function minetest.is_protected(pos, name)
 
 			-- invert pitch
 			player:set_look_vertical(-player:get_look_vertical())
-			
+			--]]
 			-- if digging below player, move up to avoid falling through hole
 			local pla_pos = player:get_pos()
 
