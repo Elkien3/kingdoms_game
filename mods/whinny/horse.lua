@@ -155,10 +155,10 @@ local function register_basehorse(name, craftitem, horse)
 
             -- rotation (the faster we go, the less we rotate)
             if ctrl.left then
-                self.object:setyaw(self.object:getyaw()+2*(1.5-math.abs(self.speed/self.max_speed))*math.pi/90 +dtime*math.pi/90)
+                self.object:setyaw(self.object:getyaw()+3*(2-math.abs(self.speed/self.max_speed))*math.pi/90 +dtime*math.pi/90)
             end
             if ctrl.right then
-                self.object:setyaw(self.object:getyaw()-2*(1.5-math.abs(self.speed/self.max_speed))*math.pi/90 -dtime*math.pi/90)
+                self.object:setyaw(self.object:getyaw()-3*(2-math.abs(self.speed/self.max_speed))*math.pi/90 -dtime*math.pi/90)
             end
             -- jumping (only if on ground)
 			
