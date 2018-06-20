@@ -22,6 +22,31 @@ function minetest.is_protected(pos, name)
 	if ctf.player(name).team == team then
 		return old_is_protected(pos, name)
 	else
+		local player = minetest.get_player_by_name(name)
+		if player then
+			-- yaw + 180°
+			local yaw = player:get_look_horizontal() + math.pi
+			if yaw > 2 * math.pi then
+				yaw = yaw - 2 * math.pi
+			end
+			player:set_look_yaw(yaw)
+
+			-- invert pitch
+			player:set_look_vertical(-player:get_look_vertical())
+			
+			-- if digging below player, move up to avoid falling through hole
+			local pla_pos = player:get_pos()
+
+			if pos.y < pla_pos.y then
+				player:setpos({
+					x = pla_pos.x,
+					y = pla_pos.y + 0.8,
+					z = pla_pos.z
+				})
+			else
+				player:setpos(pla_pos)
+			end
+		end
 		minetest.chat_send_player(name, "You cannot dig on team "..team.."'s land")
 		return true
 	end
