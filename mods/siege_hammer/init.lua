@@ -126,7 +126,7 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 					return itemstack
 				end
 			end
-			local online = false
+			--[[local online = false
 			local playerslist = minetest.get_connected_players()
 			for i in pairs(playerslist) do
 				local player = playerslist[i]
@@ -142,7 +142,7 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 			if not online then
 				minetest.chat_send_player(name, "There needs to be at least one member of this team online in order to siege them.")
 				return itemstack
-			end
+			end--]]
 			itemstack:add_wear(100)
 			local meta = minetest.get_meta(pos)
 			local health = 1
