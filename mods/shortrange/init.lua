@@ -1,6 +1,6 @@
-local default_range = 3
+local default_range = 4
 local long_range = default_range + 1
-local short_range = default_range - 1
+local short_range = default_range - 2
 
 local battleaxes = {"lottweapons:wood_battleaxe", "lottweapons:stone_battleaxe", "lottweapons:copper_battleaxe", "lottweapons:steel_battleaxe", "lottweapons:bronze_battleaxe", "lottweapons:gold_battleaxe"}
 local warhammers = {"lottweapons:wood_warhammer", "lottweapons:stone_warhammer", "lottweapons:copper_warhammer", "lottweapons:steel_warhammer", "lottweapons:bronze_warhammer", "lottweapons:gold_warhammer"}
