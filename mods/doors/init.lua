@@ -1,6 +1,7 @@
 -- our API object
 doors = {}
-
+minetest.register_alias("doors:gate_open", "doors:gate_wood_open")
+minetest.register_alias("doors:gate_closed", "doors:gate_wood_closed")
 -- private data
 local _doors = {}
 _doors.registered_doors = {}
