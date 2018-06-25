@@ -211,6 +211,14 @@ minetest.register_node("signs:sign_yard_steel", {
 	end,
 })
 
+minetest.register_craft({
+	output = "default:sign_wall_steel",
+	recipe = {
+		{"default:sign_wall_wood", "default:sign_wall_wood", "default:sign_wall_wood"},
+		{"", "default:steel_ingot", ""}
+	}
+})
+
 if minetest.setting_get("log_mods") then
 	minetest.log("action", "locked signs loaded")
 end
