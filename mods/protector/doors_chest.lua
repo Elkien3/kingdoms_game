@@ -322,6 +322,12 @@ minetest.register_craft({
 		{"doors:door_wood", "default:bronze_ingot"}
 	}
 })
+minetest.register_craft({
+	output = "doors:door_wood",
+	recipe = {
+		{name}
+	}
+})
 
 -- Protected Steel Door
 
