@@ -87,7 +87,7 @@ minetest.register_node("currency:shop", {
 	                "shop_top.png",
 			"shop_side.png",
 			"shop_side.png",
-			"shop_side.png",
+			"shop_back.png",
 			"shop_front.png"},
 	--inventory_image = "shop_front.png",
 	groups = {choppy=2,oddly_breakable_by_hand=2,tubedevice=1,tubedevice_receiver=1},
