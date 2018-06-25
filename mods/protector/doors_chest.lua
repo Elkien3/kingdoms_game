@@ -355,6 +355,12 @@ minetest.register_craft({
 		{"doors:door_steel", "default:copper_ingot"}
 	}
 })
+minetest.register_craft({
+	output = "doors:door_steel",
+	recipe = {
+		{name}
+	}
+})
 
 ----trapdoor----
 
