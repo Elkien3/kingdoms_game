@@ -212,7 +212,7 @@ minetest.register_node("signs:sign_yard_steel", {
 })
 
 minetest.register_craft({
-	output = "default:sign_wall_steel",
+	output = "default:sign_wall_steel 3",
 	recipe = {
 		{"default:sign_wall_wood", "default:sign_wall_wood", "default:sign_wall_wood"},
 		{"", "default:steel_ingot", ""}
