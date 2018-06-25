@@ -89,7 +89,7 @@ minetest.register_node("currency:shop", {
 			"shop_side.png",
 			"shop_side.png",
 			"shop_front.png"},
-	inventory_image = "shop_front.png",
+	--inventory_image = "shop_front.png",
 	groups = {choppy=2,oddly_breakable_by_hand=2,tubedevice=1,tubedevice_receiver=1},
 	sounds = default.node_sound_wood_defaults(),
 	after_place_node = function(pos, placer, itemstack)
