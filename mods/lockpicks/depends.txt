@@ -5,3 +5,4 @@ itemframes?
 doors?
 ctf_protect?
 moreores?
+signs?
