@@ -650,6 +650,18 @@ minetest.register_craft({
 		{'default:chest', 'default:bronze_ingot', ''},
 	}
 })
+minetest.register_craft({
+	output = 'default:chest_locked',
+	recipe = {
+		{'protector:chest', '', ''},
+	}
+})
+minetest.register_craft({
+	output = 'protector:chest',
+	recipe = {
+		{'default:chest_locked', 'default:copper_ingot', ''},
+	}
+})
 
 minetest.register_craftitem("protector:tester", {
 	description = "Protection tester",
