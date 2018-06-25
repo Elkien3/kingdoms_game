@@ -311,7 +311,7 @@ minetest.register_craft({
 	output = name,
 	recipe = {
 		{"group:wood", "group:wood", ""},
-		{"group:wood", "group:wood", "default:steel_ingot"},
+		{"group:wood", "group:wood", "default:bronze_ingot"},
 		{"group:wood", "group:wood", ""}
 	}
 })
@@ -319,7 +319,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = name,
 	recipe = {
-		{"doors:door_wood", "default:steel_ingot"}
+		{"doors:door_wood", "default:bronze_ingot"}
 	}
 })
 
@@ -436,7 +436,7 @@ minetest.register_craft({
 	recipe = {
 		{'group:wood', 'group:wood', 'group:wood'},
 		{'group:wood', 'group:wood', 'group:wood'},
-		{'', 'default:steel_ingot', ''},
+		{'', 'default:bronze_ingot', ''},
 	}
 })
 
@@ -444,7 +444,7 @@ minetest.register_craft({
 	output = "protector:trapdoor 2",
         type = "shapeless",
 	recipe = 
-		{"doors:trapdoor", "default:steel_ingot", "doors:trapdoor"}
+		{"doors:trapdoor", "default:bronze_ingot", "doors:trapdoor"}
 	
 })
 
@@ -639,7 +639,7 @@ minetest.register_craft({
 	output = 'protector:chest',
 	recipe = {
 		{'group:wood', 'group:wood', 'group:wood'},
-		{'group:wood', 'default:steel_ingot', 'group:wood'},
+		{'group:wood', 'default:bronze_ingot', 'group:wood'},
 		{'group:wood', 'group:wood', 'group:wood'},
 	}
 })
@@ -647,7 +647,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'protector:chest',
 	recipe = {
-		{'default:chest', 'default:steel_ingot', ''},
+		{'default:chest', 'default:bronze_ingot', ''},
 	}
 })
 

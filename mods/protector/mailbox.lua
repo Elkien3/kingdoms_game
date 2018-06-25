@@ -1,4 +1,4 @@
-minetest.register_craft({
+--[[minetest.register_craft({
   output ="protector:mailbox 4",
   recipe = {
     {"","default:steel_ingot",""},
@@ -106,4 +106,4 @@ minetest.register_node("protector:mailbox", {
 	end,
 
 	on_blast = function() end,
-})
+})--]]

@@ -113,29 +113,32 @@ minetest.register_node("itemframes:frame",{
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.env:get_meta(pos)
 		meta:set_string("owner",placer:get_player_name())
-		--meta:set_string("infotext","Item frame (owned by "..placer:get_player_name()..")")
+		meta:set_string("infotext","Item frame (owned by "..placer:get_player_name()..")")
 	end,
 	on_rightclick = function(pos, node, clicker, itemstack)
 		if not itemstack then return end
 		local meta = minetest.env:get_meta(pos)
-		--if clicker:get_player_name() == meta:get_string("owner") then
+		local owner = meta:get_string("owner")
+		if clicker:get_player_name() == owner or owner == "" then
 			drop_item(pos,node)
 			local s = itemstack:take_item()
 			meta:set_string("item",s:to_string())
 			update_item(pos,node)
-		--end
+		end
 		return itemstack
 	end,
 	on_punch = function(pos,node,puncher)
 		local meta = minetest.env:get_meta(pos)
-		--if puncher:get_player_name() == meta:get_string("owner") then
+		local owner = meta:get_string("owner")
+		if puncher:get_player_name() == owner or owner == "" then
 			drop_item(pos, node)
-		--end
+		end
 	end,
 	can_dig = function(pos,player)
 		
 		local meta = minetest.env:get_meta(pos)
-		return true --player:get_player_name() == meta:get_string("owner")
+		local owner = meta:get_string("owner")
+		return player:get_player_name() == owner or owner == ""
 	end,
 })
 
@@ -157,29 +160,32 @@ minetest.register_node("itemframes:pedestal",{
 	after_place_node = function(pos, placer, itemstack)
 		local meta = minetest.env:get_meta(pos)
 		meta:set_string("owner",placer:get_player_name())
-		--meta:set_string("infotext","Pedestal (owned by "..placer:get_player_name()..")")
+		meta:set_string("infotext","Pedestal (owned by "..placer:get_player_name()..")")
 	end,
 	on_rightclick = function(pos, node, clicker, itemstack)
 		if not itemstack then return end
 		local meta = minetest.env:get_meta(pos)
-		--if clicker:get_player_name() == meta:get_string("owner") then
+		local owner = meta:get_string("owner")
+		if clicker:get_player_name() == owner or owner == "" then
 			drop_item(pos,node)
 			local s = itemstack:take_item()
 			meta:set_string("item",s:to_string())
 			update_item(pos,node)
-		--end                
+		end
 		return itemstack
 	end,
 	on_punch = function(pos,node,puncher)
 		local meta = minetest.env:get_meta(pos)
-		--if puncher:get_player_name() == meta:get_string("owner") then
+		local owner = meta:get_string("owner")
+		if puncher:get_player_name() == owner or owner == "" then
 			drop_item(pos,node)
-		--end
+		end
 	end,
 	can_dig = function(pos,player)
 		
 		local meta = minetest.env:get_meta(pos)
-		return true --player:get_player_name() == meta:get_string("owner")
+		local owner = meta:get_string("owner")
+		return player:get_player_name() == owner or owner == ""
 	end,
 })
 
