@@ -355,7 +355,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:skeleton_key',
 	recipe = {
-		{'default:gold_ingot'},
+		{'default:gold_ingot', "default:stick"},
 	}
 })
 
