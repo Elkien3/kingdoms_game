@@ -350,7 +350,7 @@ minetest.register_tool("default:sword_bronze", {
 	},
 	sound = {breaks = "default_tool_breaks"},
 })
-
+--[[
 minetest.register_tool("default:sword_mese", {
 	description = "Mese Sword",
 	inventory_image = "default_tool_mesesword.png",
@@ -377,7 +377,7 @@ minetest.register_tool("default:sword_diamond", {
 		damage_groups = {fleshy=8},
 	},
 	sound = {breaks = "default_tool_breaks"},
-})
+})--]]
 
 minetest.register_tool("default:key", {
 	description = "Key",
