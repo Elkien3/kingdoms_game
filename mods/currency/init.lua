@@ -3,6 +3,8 @@ local modpath = minetest.get_modpath("currency")
 
 --dofile(modpath.."/craftitems.lua")
 --minetest.log("info", "[Currency] Craft_items Loaded!")
+dofile(modpath.."/coins.lua")
+minetest.log("info", "[Currency] Coins Loaded!")
 dofile(modpath.."/shop.lua")
 minetest.log("info", "[Currency] Shop Loaded!")
 --dofile(modpath.."/barter.lua")
