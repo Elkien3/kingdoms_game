@@ -3,7 +3,7 @@ local language = "francais" --must be all lowercase
 local yes = "Oui."
 local no = "Non."
 rule_table[language] = {
-secondaryname = nil, --secondary name, usually the language name in english, or in the actual language.
+secondaryname = "french", --secondary name, usually the language name in english, or in the actual language.
 
 rules = [[
 Rules:
