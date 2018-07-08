@@ -3,6 +3,7 @@ rule_language = {}
 dofile(minetest.get_modpath("interact") .. "/rules-english.lua") --I put the rules in their own file so that they don't get lost/overlooked!
 dofile(minetest.get_modpath("interact") .. "/rules-russian.lua")
 dofile(minetest.get_modpath("interact") .. "/rules-deutsch.lua")
+dofile(minetest.get_modpath("interact") .. "/rules-francais.lua")
 dofile(minetest.get_modpath("interact") .. "/config.lua")
 
 local rule1 = 0
