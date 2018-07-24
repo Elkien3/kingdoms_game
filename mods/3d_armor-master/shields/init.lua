@@ -224,4 +224,12 @@ for k, v in pairs(armor.materials) do
 			{"", v, ""},
 		},
 	})
+	if v ~= "group:wood" then
+		minetest.register_craft({
+			output = v .. " 7",
+			type = "cooking",
+			cooktime = 14,
+			recipe = "shields:shield_"..k
+		})
+	end
 end
