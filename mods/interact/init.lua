@@ -4,6 +4,7 @@ dofile(minetest.get_modpath("interact") .. "/rules-english.lua") --I put the rul
 dofile(minetest.get_modpath("interact") .. "/rules-russian.lua")
 dofile(minetest.get_modpath("interact") .. "/rules-deutsch.lua")
 dofile(minetest.get_modpath("interact") .. "/rules-francais.lua")
+dofile(minetest.get_modpath("interact") .. "/rules-espanol.lua")
 dofile(minetest.get_modpath("interact") .. "/config.lua")
 
 local rule1 = 0
