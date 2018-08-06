@@ -126,9 +126,9 @@ minetest.register_tool("siege_hammer:siege_hammer", {
 					return itemstack
 				end
 			end
-			--[[local online = false
+			local online = false
 			local playerslist = minetest.get_connected_players()
-			for i in pairs(playerslist) do
+			--[[for i in pairs(playerslist) do
 				local player = playerslist[i]
 				local player_name = player:get_player_name()
 				local player_team = ctf.player(player_name).team
