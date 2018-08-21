@@ -205,6 +205,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			privs.interact = true
 			minetest.set_player_privs(name, privs)
 			minetest.log("action", "Granted " ..name.. " interact.")
+			minetest.chat_send_all(name.. " passed the rules test, welcome him/her in the land of kingdoms!")
 		end
 	elseif fields.submit then
 		rule1 = 0
