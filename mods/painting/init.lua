@@ -212,7 +212,15 @@ local on_activate = function(self, staticdata)
                 or not data.grid then
                         return
                 end
-                self.object:set_properties{textures = { to_imagestring(data.grid, data.res) }}
+		local pos = self.object:getpos()
+		local wallmounted = minetest.get_node(pos).param2%8 --wallmounted = first 3 bits
+		print(dump(pos), wallmounted)
+                if wallmounted ~= 5 then -- if not ceiling (wierd thing is, wallmounted = 1 is -y but
+		                         -- here it seems to be 5 the question is why? ...
+		    self.object:set_properties{textures = { to_imagestring(data.grid, data.res) }}
+		else
+		    self.object:set_properties{textures = {"white.png", to_imagestring(data.grid, data.res) }}
+                end
                 if data.version ~= current_version then
                         minetest.log("legacy", "[painting] updating placed picture data")
                         if data.version == "nopairs" then
@@ -414,10 +422,10 @@ minetest.register_craftitem("painting:paintedcanvas", {
                 print(wallmounted)
                 if wallmounted == 0 then
                     local obj = minetest.add_entity(pos, "painting:picent_notupright")
-                    obj:set_properties{ textures = { img}}
+                    obj:set_properties{ textures = { img }}
                 elseif wallmounted == 1 then
                     local obj = minetest.add_entity(pos, "painting:picent_notupright")
-                    obj:set_properties{ textures = { "white.png", img}}
+                    obj:set_properties{ textures = { "white.png", img }}
                 else
                     local obj = minetest.add_entity(pos, "painting:picent")
                     obj:set_properties{ textures = { img }}
