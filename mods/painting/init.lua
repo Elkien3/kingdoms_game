@@ -204,7 +204,7 @@ local on_activate = function(self, staticdata)
                 if not data then
                         data = minetest.deserialize(minetest.decompress(ldata))
                         if data then
-                                print("loaded old data, converted to new uncompressed")
+                                minetest.log("action", "[painting]loaded old data, converted to new uncompressed")
                         end
                 end
                 -- end backwards compatiblity
@@ -214,7 +214,6 @@ local on_activate = function(self, staticdata)
                 end
 		local pos = self.object:getpos()
 		local wallmounted = minetest.get_node(pos).param2%8 --wallmounted = first 3 bits
-		print(dump(pos), wallmounted)
                 if wallmounted ~= 5 then -- if not ceiling (wierd thing is, wallmounted = 1 is -y but
 		                         -- here it seems to be 5 the question is why? ...
 		    self.object:set_properties{textures = { to_imagestring(data.grid, data.res) }}
@@ -419,7 +418,6 @@ minetest.register_craftitem("painting:paintedcanvas", {
                 if data == nil then return ItemStack("") end
 
                 local img = to_imagestring(data.grid, data.res)
-                print(wallmounted)
                 if wallmounted == 0 then
                     local obj = minetest.add_entity(pos, "painting:picent_notupright")
                     obj:set_properties{ textures = { img }}
