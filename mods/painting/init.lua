@@ -164,13 +164,12 @@ minetest.register_node("painting:pic", {
         on_punch = function(pos, node, player, pointed_thing)
                 local meta = minetest.get_meta(pos):to_table()
                 if meta == nil then return end
-                --print("metadata: painting:picturedata:")
-                --print(dump(meta.fields["painting:picturedata"]))
+                        
                 if not meta.fields["painting:picturedata"] then return end
                 local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
                 if not minetest.deserialize(data) then
                         data = minetest.decompress(data)
-                        print("tryed to copy old data, convert it to new format")
+                        minetest.log("action", "tried to copy old data, convert it to new format")
                 end
 
                 --compare resulutions of picture and canvas the player wields
@@ -207,7 +206,7 @@ local on_activate = function(self, staticdata)
                 if not data then
                         data = minetest.deserialize(minetest.decompress(ldata))
                         if data then
-                                print("loaded old data, converted to new uncompressed")
+                                minetest.log("action", "loaded old data, converted to new uncompressed")
                         end
                 end
                 -- end backwards compatiblity
@@ -335,7 +334,7 @@ minetest.register_entity("painting:paintent", {
                 if not data then
                         data = minetest.deserialize(minetest.decompress(staticdata))
                         if data then
-                                print("loaded old data, converted to new uncompressed")
+                                minetest.log("action", "loaded old data, converted to new uncompressed")
                         end
                 end
                 -- end backwards compatiblity
@@ -362,33 +361,6 @@ minetest.register_entity("painting:paintent", {
                 }
         end
 })
-
-local function rotate_and_place(itemstack, placer, pointed_thing)
-        local p0 = pointed_thing.under
-        local p1 = pointed_thing.above
-        local param2 = 0
-
-        if placer then
-                local placer_pos = placer:get_pos()
-                if placer_pos then
-                        param2 = minetest.dir_to_facedir(vector.subtract(p1, placer_pos))
-                end
-
-                local finepos = minetest.pointed_thing_to_face_pos(placer, pointed_thing)
-                local fpos = finepos.y % 1
-
-                if p0.y - 1 == p1.y or (fpos > 0 and fpos < 0.5)
-                                or (fpos < -0.5 and fpos > -0.999999999) then
-                        param2 = param2 + 20
-                        if param2 == 21 then
-                                param2 = 23
-                        elseif param2 == 23 then
-                                param2 = 21
-                        end
-                end
-        end
-        return minetest.item_place(itemstack, placer, pointed_thing, param2)
-end
 
 --paintedcanvas picture inventory item
 minetest.register_craftitem("painting:paintedcanvas", {
@@ -448,10 +420,10 @@ minetest.register_craftitem("painting:paintedcanvas", {
                 if not minetest.deserialize(data) then
                         status, data = pcall(minetest.decompress, data)
                         if (status and data) then
-                                print("tried to save old data"..
+                                minetest.log("action", "tried to save old data"..
                                 "converted to new uncompressed, save")
                         elseif not status then
-                                print("error loading data")
+                                minetest.log("error", "loading picture data unsuccessfull")
                         end
                 end
                 -- end backwards compatiblity
