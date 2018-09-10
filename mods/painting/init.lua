@@ -214,7 +214,11 @@ local on_activate = function(self, staticdata)
 
                 self.object:set_properties({textures = { to_imagestring(data.grid, data.res) }})
                 local pos = self.object:getpos()
-                local param2 = minetest.get_node(pos).param2 --wallmounted = first 3 bits
+		local node = minetest.get_node(pos)
+                local param2 = node.param2 --wallmounted = first 3 bits
+		if node.name == "air" then
+			minetest.swap_node(pos, {name="painting:pic"})
+		end
                 if param2 == 20 then -- if ceiling
                     self.object:set_properties({textures = {"white.png", to_imagestring(data.grid, data.res) }})
                 end
