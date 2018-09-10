@@ -106,7 +106,6 @@ local function to_imagestring(data, res)
                 return "white.png"
         end
         t[n] = t[n]:sub(1,-2)
-        --print(table.concat(t))
         return table.concat(t)
 end
 
@@ -151,8 +150,6 @@ minetest.register_node("painting:pic", {
                 end
                 if not oldmetadata.fields["painting:picturedata"] then return end
                 local data = legacy.load_itemmeta(oldmetadata.fields["painting:picturedata"])
-                --print("DATA OF DIGGED IMAGE");
-                --print(dump(data))
                 --put picture data back into inventory item
                 digger:get_inventory():add_item("main", {
                         name = "painting:paintedcanvas",
@@ -440,7 +437,6 @@ minetest.register_craftitem("painting:paintedcanvas", {
                 if data == nil then return ItemStack("") end
 
                 local img = to_imagestring(data.grid, data.res)
-                print(wallmounted)
                 if wallmounted == 1 then
                     local obj = minetest.add_entity(pos, "painting:picent_notupright")
                     obj:set_properties{ textures = { img }}
@@ -717,8 +713,6 @@ minetest.register_node("painting:pic_legacy_facedir", {
                 end
                 if not oldmetadata.fields["painting:picturedata"] then return end
                 local data = legacy.load_itemmeta(oldmetadata.fields["painting:picturedata"])
-                --print("DATA OF DIGGED IMAGE");
-                --print(dump(data))
                 --put picture data back into inventory item
                 digger:get_inventory():add_item("main", {
                         name = "painting:paintedcanvas",
@@ -730,13 +724,11 @@ minetest.register_node("painting:pic_legacy_facedir", {
         on_punch = function(pos, node, player, pointed_thing)
                 local meta = minetest.get_meta(pos):to_table()
                 if meta == nil then return end
-                --print("metadata: painting:picturedata:")
-                --print(dump(meta.fields["painting:picturedata"]))
                 if not meta.fields["painting:picturedata"] then return end
                 local data = legacy.load_itemmeta(meta.fields["painting:picturedata"])
                 if not minetest.deserialize(data) then
                         data = minetest.decompress(data)
-                        print("tryed to copy old data, convert it to new format")
+                        minetest.log("action", "tried to copy old data, convert it to new format")
                 end
 
                 --compare resulutions of picture and canvas the player wields
