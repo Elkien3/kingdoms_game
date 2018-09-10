@@ -215,7 +215,6 @@ local on_activate = function(self, staticdata)
                 self.object:set_properties({textures = { to_imagestring(data.grid, data.res) }})
                 local pos = self.object:getpos()
                 local param2 = minetest.get_node(pos).param2 --wallmounted = first 3 bits
-                minetest.chat_send_all(dump(pos) .. param2)
                 if param2 == 20 then -- if ceiling
                     self.object:set_properties({textures = {"white.png", to_imagestring(data.grid, data.res) }})
                 end
@@ -312,7 +311,6 @@ minetest.register_entity("painting:paintent", {
                 --check for brush.
                 local name = string.sub(puncher:get_wielded_item():get_name(), #"painting:brush_"+1)
                 if not colors[name] then        -- Not one of the brushes; can't paint.
---              minetest.chat_send_all(name)
                         return
                 end
 
