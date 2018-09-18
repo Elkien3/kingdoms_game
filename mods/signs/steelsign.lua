@@ -96,6 +96,13 @@ minetest.register_node(":default:sign_wall_steel", {
     on_place = function(itemstack, placer, pointed_thing)
         local above = pointed_thing.above
         local under = pointed_thing.under
+			
+	pname = placer:get_player_name()
+	if minetest.is_protected(above, pname) then
+		minetest.record_protection_violation(above, pname)
+		return itemstack
+	end
+		
         local dir = {x = under.x - above.x,
                      y = under.y - above.y,
                      z = under.z - above.z}
