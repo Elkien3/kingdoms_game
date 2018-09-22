@@ -816,7 +816,7 @@ minetest.register_craft({
 
 minetest.register_craft( {
 	type = "shapeless",
-	output = "default:bronze_ingot",
+	output = "default:bronze_ingot 2",
 	recipe = {"default:steel_ingot", "default:copper_ingot"},
 })
 
@@ -824,7 +824,7 @@ minetest.register_craft( {
 
 minetest.register_craft( {
 	type = "shapeless",
-	output = "default:bronze_ingot",
+	output = "default:bronze_ingot 2",
 	recipe = {"default:tin_ingot", "default:copper_ingot"}
 })
 
