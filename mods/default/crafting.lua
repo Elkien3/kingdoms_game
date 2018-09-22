@@ -820,6 +820,14 @@ minetest.register_craft( {
 	recipe = {"default:steel_ingot", "default:copper_ingot"},
 })
 
+-- Craft for tin+copper=bronze, to give tin a use.
+
+minetest.register_craft( {
+	type = "shapeless",
+	output = "default:bronze_ingot",
+	recipe = {"default:tin_ingot", "default:copper_ingot"}
+})
+
 --
 -- Crafting (tool repair)
 --
