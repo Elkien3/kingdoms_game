@@ -814,6 +814,12 @@ minetest.register_craft({
 	}
 })
 
+minetest.register_craft( {
+	type = "shapeless",
+	output = "default:bronze_ingot",
+	recipe = {"default:steel_ingot", "default:copper_ingot"},
+})
+
 --
 -- Crafting (tool repair)
 --
