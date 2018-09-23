@@ -359,7 +359,7 @@ function default.register_ores()
 
 	-- Tin
 
-	minetest.register_ore({
+	--[[minetest.register_ore({
 		ore_type       = "scatter",
 		ore            = "default:stone_with_tin",
 		wherein        = "default:stone",
@@ -379,7 +379,7 @@ function default.register_ores()
 		clust_size     = 3,
 		y_min          = -127,
 		y_max          = -32,
-	})
+	})--]]
 
 	minetest.register_ore({
 		ore_type       = "scatter",
