@@ -13,7 +13,7 @@ local loss_prob = {}
 loss_prob["default:cobble"] = 3
 loss_prob["default:dirt"] = 4
 
-local radius = tonumber(minetest.setting_get("tnt_radius") or 3)
+local radius = tonumber(minetest.setting_get("tnt_radius") or 2)
 
 -- Fill a list with data for content IDs, after all nodes are registered
 local cid_data = {}
@@ -223,7 +223,7 @@ local function boom(pos)
 	eject_drops(drops, pos, radius)
 	add_effects(pos, radius)
 end
---[[
+
 minetest.register_node("tnt:tnt", {
 	description = "TNT",
 	tiles = {"tnt_top.png", "tnt_bottom.png", "tnt_side.png"},
@@ -278,7 +278,7 @@ minetest.register_node("tnt:boom", {
 	-- unaffected by explosions
 	on_blast = function() end,
 })
---]]
+
 minetest.register_node("tnt:gunpowder", {
 	description = "Gun Powder",
 	drawtype = "raillike",
