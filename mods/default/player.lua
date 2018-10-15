@@ -101,7 +101,7 @@ minetest.register_on_joinplayer(function(player)
 	player:set_physics_override({
 		sneak_glitch = true,
 		sneak = true,
-		new_move = not use_old_code
+		new_move = false
 	})
 end)
 
