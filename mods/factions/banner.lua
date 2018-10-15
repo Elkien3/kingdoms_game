@@ -1,5 +1,5 @@
 -- nodes
-minetest.register_node("factions:power_banner", {
+--[[minetest.register_node("factions:power_banner", {
     drawtype = "normal",
     tiles = {"power_banner.png"},
     description = "Power Banner",
@@ -101,4 +101,4 @@ if minetest.get_modpath("default") and minetest.get_modpath("bones") then
 			{'default:obsidian','default:obsidian','default:obsidian'}
 		}
 	})
-end
+end--]]
