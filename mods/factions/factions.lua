@@ -195,6 +195,7 @@ function factions.Faction.decrease_maxpower(self, power)
 end
 
 function factions.Faction.increase_usedpower(self, power)
+	factions.Faction.increase_maxpower(self, power)
     self.usedpower = self.usedpower + power
 	local playerslist = minetest.get_connected_players()
 	for i in pairs(playerslist) do
@@ -208,6 +209,7 @@ function factions.Faction.increase_usedpower(self, power)
 end
 
 function factions.Faction.decrease_usedpower(self, power)
+	factions.Faction.decrease_maxpower(self, power)
     self.usedpower = self.usedpower - power
     if self.usedpower < 0. then
         self.usedpower = 0.
@@ -885,7 +887,7 @@ createHudPower = function(player,faction)
 			name = "powerWatch",
 			number = 0xFFFFFF,
 			position = {x=0.9, y = .98},
-			text = "Power "..faction.power.."/"..faction.maxpower - faction.usedpower.."/"..faction.maxpower,
+			text = "Power "..faction.power.."/"..faction.maxpower - faction.usedpower.."/"..faction.usedpower,
 			scale = {x=1, y=1},
 			alignment = {x=-1, y=0},
 			offset = {x = 0, y = 0}
@@ -897,7 +899,7 @@ updateHudPower = function(player,faction)
 	local name = player:get_player_name()
 	local id_name = name .. "2"
 	if hud_ids[id_name] then
-		player:hud_change(hud_ids[id_name],"text","Power "..faction.power.."/"..faction.maxpower - faction.usedpower.."/"..faction.maxpower)
+		player:hud_change(hud_ids[id_name],"text","Power "..faction.power.."/"..faction.maxpower - faction.usedpower.."/"..faction.usedpower)
 	end
 end
 
