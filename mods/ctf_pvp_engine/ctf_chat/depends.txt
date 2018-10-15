@@ -1,4 +1,0 @@
-ctf
-chatplus?
-irc?
-inventory_plus
