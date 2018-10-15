@@ -1,5 +1,5 @@
 --Weapons!
-
+--[[
 minetest.register_tool("lottweapons:septer", {
 	description = "Septer",
 	inventory_image = "lottweapons_septer.png",
@@ -44,7 +44,7 @@ minetest.register_craft({
 		{'', 'group:stick', 'default:gold_ingot'},
 		{'group:stick', '', ''},
 	}
-})
+})--]]
 
 -- Battle axes:
 minetest.register_tool("lottweapons:wood_battleaxe", {

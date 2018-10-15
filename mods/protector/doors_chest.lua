@@ -674,7 +674,7 @@ minetest.register_craft({
 		{'default:chest_locked', 'default:copper_ingot', ''},
 	}
 })
-
+--[[
 minetest.register_craftitem("protector:tester", {
 	description = "Protection tester",
 	inventory_image = "protector_stick.png",
@@ -697,4 +697,4 @@ minetest.register_craft({
 	recipe = {
 		{'default:stick', 'default:steel_ingot', ''},
 	}
-})
+})--]]
