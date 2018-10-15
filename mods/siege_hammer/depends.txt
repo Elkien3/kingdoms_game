@@ -1,4 +1,0 @@
-ctf_protect
-ctf
-ctf_flag
-chatplus?

@@ -1,1 +1,0 @@
-Siege hammer breaks down only protected ctf nodes.
