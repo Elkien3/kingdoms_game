@@ -1,3 +1,0 @@
-A mod that gives the interact priv to players who want it.
-It displays the rules, and then provides a simple quiz on them.
-If the player completes the quiz sucsesfully, then s/he is given interact.
