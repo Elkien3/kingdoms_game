@@ -89,7 +89,7 @@ function default.player_set_animation(player, anim_name, speed)
 	player:set_animation(anim, speed or model.animation_speed, animation_blend)
 end
 
--- Update appearance when the player joins
+-- Update appearance when the player joins and enable sneak-jumping
 minetest.register_on_joinplayer(function(player)
 	default.player_attached[player:get_player_name()] = false
 	default.player_set_model(player, "character.b3d")
@@ -97,6 +97,12 @@ minetest.register_on_joinplayer(function(player)
 
 	player:hud_set_hotbar_image("gui_hotbar.png")
 	player:hud_set_hotbar_selected_image("gui_hotbar_selected.png")
+		
+	player:set_physics_override({
+		sneak_glitch = true,
+		sneak = true,
+		new_move = not use_old_code
+	})
 end)
 
 minetest.register_on_leaveplayer(function(player)
