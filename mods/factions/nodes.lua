@@ -21,9 +21,9 @@ function factions.can_use_chest(pos, player)
     if not parcel_faction then
         return true
     end
-    return player_faction and (parcel_faction.name == player_faction.name)
+    return player_faction and (parcel_faction.name == player_faction.name or parcel_faction.allies[player_faction.name])
 end
---[[
+
 minetest.register_node("factions:chest", {
     tiles = {"factions_chest_top.png", "factions_chest_top.png",
              "factions_chest_side.png", "factions_chest_side.png",
@@ -68,4 +68,56 @@ minetest.register_craft({
     type = "shapeless",
     recipe = {"default:chest_locked", "default:steel_ingot"}
 })
---]]
+
+-- Code below was copied from TenPlus1's protector mod(MIT) and changed up a bit.
+
+local x = math.floor(factions_config.parcel_size / 2.1)
+
+minetest.register_node("factions:display_node", {
+	tiles = {"factions_display.png"},
+	use_texture_alpha = true,
+	walkable = false,
+	drawtype = "nodebox",
+	node_box = {
+		type = "fixed",
+		fixed = {
+			-- sides
+			{-(x+.55), -(x+.55), -(x+.55), -(x+.45), (x+.55), (x+.55)},
+			{-(x+.55), -(x+.55), (x+.45), (x+.55), (x+.55), (x+.55)},
+			{(x+.45), -(x+.55), -(x+.55), (x+.55), (x+.55), (x+.55)},
+			{-(x+.55), -(x+.55), -(x+.55), (x+.55), (x+.55), -(x+.45)},
+			-- top
+			{-(x+.55), (x+.45), -(x+.55), (x+.55), (x+.55), (x+.55)},
+			-- bottom
+			{-(x+.55), -(x+.55), -(x+.55), (x+.55), -(x+.45), (x+.55)},
+			-- middle (surround parcel)
+			{-.55,-.55,-.55, .55,.55,.55},
+		},
+	},
+	selection_box = {
+		type = "regular",
+	},
+	paramtype = "light",
+	groups = {dig_immediate = 3, not_in_creative_inventory = 1},
+	drop = "",
+})
+
+minetest.register_entity("factions:display", {
+	physical = false,
+	collisionbox = {0, 0, 0, 0, 0, 0},
+	visual = "wielditem",
+	visual_size = {x = 1.0 / 1.5, y = 1.0 / 1.5},
+	textures = {"factions:display_node"},
+	timer = 0,
+
+	on_step = function(self, dtime)
+
+		self.timer = self.timer + dtime
+
+		if self.timer > 6 then
+			self.object:remove()
+		end
+	end,
+})
+
+-- End
