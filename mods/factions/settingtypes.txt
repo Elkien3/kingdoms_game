@@ -1,16 +1,14 @@
 [ValueSettings]
 
 # The max depth of protection from a parcel.
-protection_max_depth (Protection max depth) float 512
-# The max height of protection from a parcel.
-protection_max_height (Protection max height) float 10000
+protection_max_depth (Protection max depth) float -50
 # Cost of power to claim a parcel of land.
-power_per_parcel (Power-per-parcel) float 1
+power_per_parcel (Power-per-parcel) float 0.5
 # Power lost on death.
-power_per_death (Power-per-death) float 1
+power_per_death (Power-per-death) float 0.25
 # Power regeneration rate.
-power_per_tick (Power-per-tick) float 2
-# Faction timer. This timer regenerates power.
+power_per_tick (Power-per-tick) float 0.125
+# Faction timer. This timer regenerates power if the faction members are online.
 tick_time (Faction timer) float 60
 # Not in use.
 power_per_attack (Power-per-attack) float 10
@@ -20,32 +18,14 @@ faction_name_max_length (Faction name max) int 50
 rank_name_max_length (Rank name max length) int 25
 # The maximum amount of inactivity before disbanning a faction.
 maximum_faction_inactivity (Maximum faction inactivity) int 604800
-# The maximum amount of time for a parcelless faction to disban.
-maximum_parcelless_faction_time (Maximum parcelless faction time) int 10800
 # Power of a starting faction (needed for parcel claiming).
-power (Starting power) float 0
-# Maximum power of a starting faction.
-maxpower (Starting Maximum power) float 0
-# How much power the players make.
-power_per_player (power-per-player) float 1
-# How much max power is created per new player.
-powermax_per_player (powermax-per-player) float 12
-# parcel size
-parcel_size (parcel-size) float 16
+power (Starting power) float 2
+# Maximum power of a faction.
+maxpower (Maximum power) float 2
+# How much power the banners make.
+power_per_banner (power-per-banner) float 10
 
 [BoolSettings]
 
-# Enable or disabled power-per-player.
-power_per_playerb (Enable power-per-player) bool true
-# Enable or disabled factions_config.attack_parcel function.
-factions_config.attack_parcel (Enable attack parcel) bool false
-# Enable or disabled faction diplomacy.
-faction_diplomacy (Enable faction diplomacy) bool true
-# Enable or disabled the max depth and height limit for a parcel
-protection_depth_height_limit (Enable protection depth height limit) bool true
-
-[StringSettings]
-# Set the way that the parcel protection works (2d,3d).
-# 2d limits how far x and z can go but protection on the y goes up and down far.
-# 3d limits all three axis.
-protection_style (Protection style) string 2d
+# Enable or disabled attack_parcel function.
+attack_parcel (Enable attack parcel) bool false
