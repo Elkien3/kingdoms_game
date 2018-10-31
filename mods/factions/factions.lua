@@ -323,13 +323,19 @@ end
 
 --! @brief disband faction, updates global players and parcels table
 function factions.Faction.disband(self, reason)
-	local playerslist = minetest.get_connected_players()
+    local playerslist = minetest.get_connected_players()
+
     for k, _ in pairs(factions.players) do -- remove players affiliation
-        factions.players[k] = nil
+        if(factions.players[k] == self.name) then
+            factions.players[k] = nil
+        end
     end
     for k, v in pairs(self.land) do -- remove parcel claims
-        factions.parcels[k] = nil
+        if(factions.parcels[k] == self.name) then
+            factions.parcels[k] = nil
+        end
     end
+
     self:on_disband(reason)
     factions.factions[self.name] = nil
 	for i in pairs(playerslist) do
@@ -339,7 +345,8 @@ function factions.Faction.disband(self, reason)
 			removeHud(realplayer,"1")
 			removeHud(realplayer,"2")
 		end
-	end
+    end
+
     factions.save()
 end
 
@@ -361,7 +368,11 @@ function factions.Faction.has_permission(self, player, permission)
     if not p then
         return false
     end
+
     local perms = self.ranks[p]
+    if not perms then
+        return false
+
     for i in ipairs(perms) do
         if perms[i] == permission then
             return true
