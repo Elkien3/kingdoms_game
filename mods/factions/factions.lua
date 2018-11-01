@@ -372,6 +372,7 @@ function factions.Faction.has_permission(self, player, permission)
     local perms = self.ranks[p]
     if not perms then
         return false
+    end
 
     for i in ipairs(perms) do
         if perms[i] == permission then
