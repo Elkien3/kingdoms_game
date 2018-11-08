@@ -25,7 +25,7 @@
         end
 		minetest.node_dig(pos, n, p)
     end,
-})
+})]]
 
 minetest.register_node("factions:death_banner", {
     drawtype = "normal",
@@ -56,7 +56,7 @@ minetest.register_node("factions:death_banner", {
     end,
 })
 
-after_powerbanner_placed = function(pos, player, itemstack, pointed_thing)
+--[[after_powerbanner_placed = function(pos, player, itemstack, pointed_thing)
     --minetest.get_node(pos).param2 = determine_flag_direction(pos, pointed_thing)
     local faction = factions.players[player:get_player_name()]
     if not faction then
@@ -67,7 +67,7 @@ after_powerbanner_placed = function(pos, player, itemstack, pointed_thing)
         minetest.get_meta(pos):set_string("faction", faction)
         factions.factions[faction]:increase_maxpower(config.power_per_banner)
     end
-end
+end]]
 
 after_deathbanner_placed = function(pos, player, itemstack, pointed_thing)
    -- minetest.get_node(pos).param2 = determine_flag_direction(pos, pointed_thing)
@@ -81,7 +81,7 @@ after_deathbanner_placed = function(pos, player, itemstack, pointed_thing)
     minetest.get_meta(pos):set_string("banner", "death_uv.png")
 end
 
-if minetest.get_modpath("default") then
+--[[if minetest.get_modpath("default") then
 	minetest.register_craft({
 		output = 'factions:power_banner',
 		recipe = {
@@ -90,7 +90,7 @@ if minetest.get_modpath("default") then
 			{'default:mese_crystal','default:mese_crystal','default:mese_crystal'}
 		}
 	})
-end
+end]]
 
 if minetest.get_modpath("default") and minetest.get_modpath("bones") then
 	minetest.register_craft({
@@ -101,4 +101,4 @@ if minetest.get_modpath("default") and minetest.get_modpath("bones") then
 			{'default:obsidian','default:obsidian','default:obsidian'}
 		}
 	})
-end--]]
+end
