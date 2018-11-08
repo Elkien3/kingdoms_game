@@ -11,7 +11,7 @@ power_per_tick (Power-per-tick) float 0.125
 # Faction timer. This timer regenerates power if the faction members are online.
 tick_time (Faction timer) float 60
 # Not in use.
-power_per_attack (Power-per-attack) float 10
+power_per_attack (Power-per-attack) float 10 
 # Limit how long a faction name can be.
 faction_name_max_length (Faction name max) int 50
 # Limit how long a rank name can be.
@@ -28,4 +28,4 @@ power_per_banner (power-per-banner) float 10
 [BoolSettings]
 
 # Enable or disabled attack_parcel function.
-attack_parcel (Enable attack parcel) bool false
+attack_parcel (Enable attack parcel) bool false 

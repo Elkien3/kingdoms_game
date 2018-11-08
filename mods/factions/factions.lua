@@ -311,6 +311,12 @@ function factions.Faction.claim_parcel(self, parcelpos)
     factions.save()
 end
 
+function factions.Faction.bulk_claim_parcel(self, parcelpos)
+    factions.parcels[parcelpos] = self.name
+    self.land[parcelpos] = true
+    factions.save()
+end
+
 --! @brief claim a parcel, update power and update global parcels table
 function factions.Faction.unclaim_parcel(self, parcelpos)
     factions.parcels[parcelpos] = nil
@@ -318,6 +324,12 @@ function factions.Faction.unclaim_parcel(self, parcelpos)
     self:increase_power(factions.power_per_parcel)
     self:decrease_usedpower(factions.power_per_parcel)
     self:on_unclaim_parcel(parcelpos)
+    factions.save()
+end
+
+function factions.Faction.bulk_unclaim_parcel(self, parcelpos)
+    factions.parcels[parcelpos] = nil
+    self.land[parcelpos] = nil
     factions.save()
 end
 
