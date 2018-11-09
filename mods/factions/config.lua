@@ -26,4 +26,4 @@ config.power = tonumber(minetest.setting_get("power")) or 1
 config.maxpower = tonumber(minetest.setting_get("maxpower")) or 4
 config.power_per_banner = minetest.settings:get("power_per_banner") or 1
 config.attack_parcel = minetest.settings:get_bool("attack_parcel") or false
-config.siege_banner_interval = minetest.settings:get_bool("siege_banner_interval") or 120 
+config.siege_banner_interval = minetest.settings:get_bool("siege_banner_interval") or 300

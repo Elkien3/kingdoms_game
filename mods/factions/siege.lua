@@ -166,9 +166,9 @@ if minetest.get_modpath("default") and minetest.get_modpath("bones") then
 	minetest.register_craft({
 		output = 'factions:siege_banner',
 		recipe = {
-			{'default:obsidian','default:obsidian','default:obsidian'},
-			{'default:obsidian','bones:bones','default:obsidian'},
-			{'default:obsidian','default:obsidian','default:obsidian'}
+			{'default:diamond','default:diamond','default:diamond'},
+			{'default:diamond','bones:bones','default:diamond'},
+			{'default:diamond','default:diamond','default:diamond'}
 		}
 	})
 end
