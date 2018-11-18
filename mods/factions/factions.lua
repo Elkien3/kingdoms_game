@@ -974,10 +974,25 @@ function(player)
 		alignment = {x=0, y=0},
 	})
     local faction = factions.get_player_faction(name)
+
     if faction then
         faction.last_logon = os.time()
 		createHudFactionName(player,faction.name)
 		createHudPower(player,faction)
+    end
+
+    local pos = player:get_pos()
+
+    local parcel_faction = factions.get_faction_at(pos)
+
+    if parcel_faction then
+        if not faction or parcel_faction.name ~= faction.name then
+            minetest.after(1, function()
+                if player then
+                    player:set_hp(0)
+                end
+            end)
+        end
     end
 end
 )

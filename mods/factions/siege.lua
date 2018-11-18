@@ -127,6 +127,8 @@ for j = 1, siege_banner_stages - 1 do
             minetest.set_node(pos, { name = "factions:siege_banner_" .. j + 1 })
             minetest.get_meta(pos):set_string("infotext", "Siege Banner " .. j + 1 .. "/" .. siege_banner_stages .. " (" .. att_fac_name .. " vs " .. def_fac_name .. ")")
         
+            factions.get_faction(def_fac_name):broadcast("Your parcel at " .. format_pos(pos) .. "is being sieged (" .. j + 1 .. "/" .. siege_banner_stages .. ")")
+
             meta:set_string("attacking_faction", att_fac_name)
             meta:set_string("defending_faction", def_fac_name)
         end
@@ -150,13 +152,18 @@ minetest.register_abm({
 
         local parcelpos = factions.get_parcel_pos(pos)
 
-        defending_faction:bulk_unclaim_parcel(parcelpos)
-        defending_faction:decrease_usedpower(factions.power_per_parcel)
-        attacking_faction:bulk_claim_parcel(parcelpos)
-        attacking_faction:increase_usedpower(factions.power_per_parcel)
+        if defending_faction then
+            defending_faction:bulk_unclaim_parcel(parcelpos)
+        
+            defending_faction:broadcast(att_fac_name .. " has successfully conquered your parcel at " .. format_pos(pos))
+        end
+        
+        if attacking_faction then
+            attacking_faction:bulk_claim_parcel(parcelpos)
+        
+            attacking_faction:broadcast("Successfully conquered parcel at " .. format_pos(pos) .. " !")
+        end
 
-        defending_faction:broadcast(att_fac_name .. " has successfully conquered your parcel at " .. format_pos(pos))
-        attacking_faction:broadcast("Successfully conquered parcel at " .. format_pos(pos) .. " !")
 
         minetest.set_node(pos, { name = "bones:bones" })
     end
