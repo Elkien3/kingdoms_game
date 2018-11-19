@@ -844,7 +844,7 @@ factions.faction_tick = function()
         if faction:is_online() then
             faction:increase_power(factions.power_per_tick)
         end
-        if now - faction.last_logon > factions.maximum_faction_inactivity then
+        if faction.is_admin == false and now - faction.last_logon > factions.maximum_faction_inactivity then
             faction:disband()
         end
     end
@@ -985,7 +985,7 @@ function(player)
 
     local parcel_faction = factions.get_faction_at(pos)
 
-    if parcel_faction then
+    if parcel_faction and parcel_faction.is_admin == false then
         if not faction or parcel_faction.name ~= faction.name then
             minetest.after(1, function()
                 if player then
