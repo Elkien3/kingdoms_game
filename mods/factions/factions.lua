@@ -844,7 +844,7 @@ factions.faction_tick = function()
         if faction:is_online() then
             faction:increase_power(factions.power_per_tick)
         end
-        if now - faction.last_logon > factions.maximum_faction_inactivity then
+        if faction.is_admin == false and now - faction.last_logon > factions.maximum_faction_inactivity then
             faction:disband()
         end
     end
