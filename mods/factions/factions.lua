@@ -759,7 +759,6 @@ function factions.load_player_time_stamp()
 	local file,error = io.open(factions_worldid .. "/" .. "player_time_stamps.conf","r")
 	if file ~= nil then
 		local raw_data = file:read("*a")
-		local ltime = os.time()
 		factions.delay_list = minetest.deserialize(raw_data)
 		file:close()
 	end
