@@ -25,7 +25,7 @@ factions.parcels = {}
 factions.players = {}
 -- delay list stores players names and the time they login at runtime.
 -- This prevents players from dieing on other factions land if they log-off no longer then five minutes.
--- No data is saved from this list.
+-- data is saved from this list to a file.
 factions.delay_list = {}
 
 
@@ -745,6 +745,26 @@ function factions.save()
 
 end
 
+function factions.save_player_time_stamp()
+	local file,error = io.open(factions_worldid .. "/" .. "player_time_stamps.conf","w")
+	if file ~= nil then
+        file:write(minetest.serialize(factions.delay_list))
+        file:close()
+    else
+        minetest.log("error","MOD factions: unable to save player time stamps!: " .. error)
+    end
+end
+
+function factions.load_player_time_stamp()
+	local file,error = io.open(factions_worldid .. "/" .. "player_time_stamps.conf","r")
+	if file ~= nil then
+		local raw_data = file:read("*a")
+		local ltime = os.time()
+		factions.delay_list = minetest.deserialize(raw_data)
+		file:close()
+	end
+end
+
 -------------------------------------------------------------------------------
 -- name: load()
 --
@@ -791,6 +811,7 @@ function factions.load()
             end
         end
         file:close()
+		factions.load_player_time_stamp()
     end
 end
 
@@ -990,6 +1011,7 @@ function(player)
     local parcel_faction = factions.get_faction_at(pos)
 	if not factions.delay_list[name] then
 		factions.delay_list[name] = os.time()
+		factions.save_player_time_stamp()
 	end
 	-- 300 seconds = 5 minutes
     if parcel_faction and parcel_faction.is_admin == false and os.time() - factions.delay_list[name] >= 300 then
@@ -1015,6 +1037,7 @@ minetest.register_on_leaveplayer(
 		removeHud(player,"1")
 		removeHud(player,"2")
 		factions.delay_list[name] = os.time()
+		factions.save_player_time_stamp()
 	end
 )
 
