@@ -14,6 +14,7 @@
 
 --read some basic information
 local factions_worldid = minetest.get_worldpath()
+local storage = minetest.get_mod_storage()
 
 --! @class factions
 --! @brief main class for factions
@@ -24,8 +25,6 @@ factions.factions = {}
 factions.parcels = {}
 factions.players = {}
 
-
-factions.factions = {}
 --- settings
 factions.protection_max_depth = config.protection_max_depth
 factions.power_per_parcel = config.power_per_parcel
@@ -984,8 +983,12 @@ function(player)
     local pos = player:get_pos()
 
     local parcel_faction = factions.get_faction_at(pos)
-
-    if parcel_faction and parcel_faction.is_admin == false then
+	-- Login-Time-Stamp
+	local key = "LTS:"..name
+	local value = storage:get_int(key)
+	-- 300 seconds = 5 minutes
+	-- Kill unstamped players.
+    if parcel_faction and parcel_faction.is_admin == false and (value == 0 or os.time() - value >= 300) then
         if not faction or parcel_faction.name ~= faction.name then
             minetest.after(1, function()
                 if player then
@@ -994,6 +997,11 @@ function(player)
             end)
         end
     end
+	if value == 0 then
+		local v = os.time()
+		storage:set_int(key,v)
+		value = v
+	end
 end
 )
 
@@ -1007,6 +1015,9 @@ minetest.register_on_leaveplayer(
 		end
 		removeHud(player,"1")
 		removeHud(player,"2")
+		-- Login-Time-Stamp
+		local key = "LTS:"..name
+		storage:set_int(key,os.time())
 	end
 )
 
