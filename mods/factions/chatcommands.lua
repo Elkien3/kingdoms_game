@@ -684,6 +684,7 @@ factions.register_command("setadmin", {
     format = {"faction"},
     on_success = function(player, faction, pos, parcelpos, args)
         args.factions[1].is_admin = false
+		factions.save()
         return true
     end
 },false)

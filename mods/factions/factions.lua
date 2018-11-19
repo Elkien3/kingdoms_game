@@ -985,7 +985,7 @@ function(player)
 
     local parcel_faction = factions.get_faction_at(pos)
 
-    if parcel_faction then
+    if parcel_faction and parcel_faction.is_admin == false then
         if not faction or parcel_faction.name ~= faction.name then
             minetest.after(1, function()
                 if player then
