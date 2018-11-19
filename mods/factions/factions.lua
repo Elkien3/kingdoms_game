@@ -23,6 +23,10 @@ factions = {}
 factions.factions = {}
 factions.parcels = {}
 factions.players = {}
+-- delay list stores players names and the time they login at runtime.
+-- This prevents players from dieing on other factions land if they log-off no longer then five minutes.
+-- No data is saved from this list.
+factions.delay_list = {}
 
 
 factions.factions = {}
@@ -984,8 +988,11 @@ function(player)
     local pos = player:get_pos()
 
     local parcel_faction = factions.get_faction_at(pos)
-
-    if parcel_faction and parcel_faction.is_admin == false then
+	if not factions.delay_list[name] then
+		factions.delay_list[name] = os.time()
+	end
+	-- 300 seconds = 5 minutes
+    if parcel_faction and parcel_faction.is_admin == false and os.time() - factions.delay_list[name] >= 300 then
         if not faction or parcel_faction.name ~= faction.name then
             minetest.after(1, function()
                 if player then
@@ -1007,6 +1014,7 @@ minetest.register_on_leaveplayer(
 		end
 		removeHud(player,"1")
 		removeHud(player,"2")
+		factions.delay_list[name] = os.time()
 	end
 )
 
