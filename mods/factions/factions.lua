@@ -311,6 +311,12 @@ function factions.Faction.claim_parcel(self, parcelpos)
     factions.save()
 end
 
+function factions.Faction.bulk_claim_parcel(self, parcelpos)
+    factions.parcels[parcelpos] = self.name
+    self.land[parcelpos] = true
+    factions.save()
+end
+
 --! @brief claim a parcel, update power and update global parcels table
 function factions.Faction.unclaim_parcel(self, parcelpos)
     factions.parcels[parcelpos] = nil
@@ -318,6 +324,12 @@ function factions.Faction.unclaim_parcel(self, parcelpos)
     self:increase_power(factions.power_per_parcel)
     self:decrease_usedpower(factions.power_per_parcel)
     self:on_unclaim_parcel(parcelpos)
+    factions.save()
+end
+
+function factions.Faction.bulk_unclaim_parcel(self, parcelpos)
+    factions.parcels[parcelpos] = nil
+    self.land[parcelpos] = nil
     factions.save()
 end
 
@@ -832,7 +844,7 @@ factions.faction_tick = function()
         if faction:is_online() then
             faction:increase_power(factions.power_per_tick)
         end
-        if now - faction.last_logon > factions.maximum_faction_inactivity then
+        if faction.is_admin == false and now - faction.last_logon > factions.maximum_faction_inactivity then
             faction:disband()
         end
     end
@@ -962,10 +974,25 @@ function(player)
 		alignment = {x=0, y=0},
 	})
     local faction = factions.get_player_faction(name)
+
     if faction then
         faction.last_logon = os.time()
 		createHudFactionName(player,faction.name)
 		createHudPower(player,faction)
+    end
+
+    local pos = player:get_pos()
+
+    local parcel_faction = factions.get_faction_at(pos)
+
+    if parcel_faction and parcel_faction.is_admin == false then
+        if not faction or parcel_faction.name ~= faction.name then
+            minetest.after(1, function()
+                if player then
+                    player:set_hp(0)
+                end
+            end)
+        end
     end
 end
 )
