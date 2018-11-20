@@ -72,8 +72,9 @@ factions.Faction.__index = factions.Faction
 -- spawn: set the faction's spawn
 -- banner: set the faction's banner
 -- promote: set a player's rank
+-- diplomacy: make war, peace, or an alliance.
 
-factions.permissions = {"disband", "claim", "playerslist", "build", "description", "ranks", "spawn", "banner", "promote"}
+factions.permissions = {"disband", "claim", "playerslist", "build", "description", "ranks", "spawn", "banner", "promote", "diplomacy"}
 
 function factions.Faction:new(faction) 
     faction = {
@@ -86,7 +87,7 @@ function factions.Faction:new(faction)
         --! @brief list of player names
         players = {},
         --! @brief table of ranks/permissions
-        ranks = {["leader"] = {"disband", "claim", "playerslist", "build", "description", "ranks", "spawn", "banner", "promote"},
+        ranks = {["leader"] = {"disband", "claim", "playerslist", "build", "description", "ranks", "spawn", "banner", "promote", "diplomacy"},
                  ["moderator"] = {"claim", "playerslist", "build", "spawn"},
                  ["member"] = {"build"}
                 },
@@ -104,8 +105,12 @@ function factions.Faction:new(faction)
         land = {},
         --! @brief table of allies
         allies = {},
+		--
+		request_inbox = {},
         --! @brief table of enemies
         enemies = {},
+		--!
+		neutral = {},
         --! @brief table of parcels/factions that are under attack
         attacked_parcels = {},
         --! @brief whether faction is closed or open (boolean)
@@ -130,6 +135,58 @@ factions.new_faction = function(name)
     faction:on_create()
     factions.save()
     return faction
+end
+
+function factions.start_diplomacy(name,faction)
+	for i,fac in pairs(factions.factions) do
+		if i ~= name and not (faction.neutral[i] or faction.allies[i] or faction.enemies[i]) then
+			faction:new_enemy(i)
+			fac:new_enemy(name)
+		end
+	end
+end
+
+function factions.Faction.set_name(self, name)
+	local oldname = self.name
+	local oldfaction = factions.factions[oldname]
+	self.name = name
+	for i,fac in pairs(factions.factions) do
+		if i ~= oldname then
+			if fac.neutral[oldname] then
+				fac.neutral[oldname] = nil
+				fac.neutral[name] = true
+			end
+			if fac.allies[oldname] then
+				fac.allies[oldname] = nil
+				fac.allies[name] = true
+			end
+			if fac.enemies[oldname] then
+				fac.enemies[oldname] = nil
+				fac.enemies[name] = true
+			end
+		end
+	end
+	for parcel in pairs(self.land) do
+	factions.parcels[parcel] = self.name
+	end
+	for playername in pairs(self.players) do
+	factions.players[playername] = self.name
+	end
+	factions.factions[oldname] = nil
+	factions.factions[name] = oldfaction
+	factions.factions[name].name = name
+	local playerslist = minetest.get_connected_players()
+	for i in pairs(playerslist) do
+		for player, _ in pairs(self.players) do
+			local realplayer = playerslist[i]
+			if realplayer:get_player_name() == player then
+				removeHud(realplayer,"1")
+				createHudFactionName(realplayer,name)
+			end
+		end
+	end
+	self:on_set_name(oldname)
+	factions.save()
 end
 
 function factions.Faction.increase_power(self, power)
@@ -335,7 +392,19 @@ end
 --! @brief disband faction, updates global players and parcels table
 function factions.Faction.disband(self, reason)
     local playerslist = minetest.get_connected_players()
-
+	for i,v in pairs(factions.factions) do
+		if v.name ~= self.name then
+			if v.enemies[self.name] then
+				v:end_enemy(self.name)
+			end
+			if v.allies[self.name] then
+				v:end_alliance(self.name)
+			end
+			if v.neutral[self.name] then
+				v:end_neutral(self.name)
+			end
+		end
+	end
     for k, _ in pairs(factions.players) do -- remove players affiliation
         if(factions.players[k] == self.name) then
             factions.players[k] = nil
@@ -429,21 +498,48 @@ function factions.Faction.new_alliance(self, faction)
     if self.enemies[faction] then
         self:end_enemy(faction)
     end
+	if self.neutral[faction] then
+        self:end_neutral(faction)
+    end
     factions.save()
 end
+
 function factions.Faction.end_alliance(self, faction)
     self.allies[faction] = nil
     self:on_end_alliance(faction)
     factions.save()
 end
+
+function factions.Faction.new_neutral(self, faction)
+    self.neutral[faction] = true
+    self:on_new_neutral(faction)
+    if self.allies[faction] then
+        self:end_alliance(faction)
+    end
+    if self.enemies[faction] then
+        self:end_enemy(faction)
+    end
+    factions.save()
+end
+
+function factions.Faction.end_neutral(self, faction)
+    self.neutral[faction] = nil
+    self:on_end_neutral(faction)
+    factions.save()
+end
+
 function factions.Faction.new_enemy(self, faction)
     self.enemies[faction] = true
     self:on_new_enemy(faction)
     if self.allies[faction] then
         self:end_alliance(faction)
     end
+	if self.neutral[faction] then
+        self:end_neutral(faction)
+    end
     factions.save()
 end
+
 function factions.Faction.end_enemy(self, faction)
     self.enemies[faction] = nil
     self:on_end_enemy(faction)
@@ -466,6 +562,72 @@ function factions.Faction.add_rank(self, rank, perms)
     factions.save()
 end
 
+--! @brief replace an rank's permissions
+--! @param rank the name of the rank to edit
+--! @param add or remove permissions to the rank
+function factions.Faction.replace_privs(self, rank, perms)
+    self.ranks[rank] = perms
+    self:on_replace_privs(rank)
+    factions.save()
+end
+
+function factions.Faction.remove_privs(self, rank, perms)
+	local revoked = false
+	local p = self.ranks[rank]
+	for index, perm in pairs(p) do
+		if table_Contains(perms,perm) then
+			revoked = true
+			table.remove(p,index)
+		end
+	end
+	self.ranks[rank] = p
+	if revoked then
+		self:on_remove_privs(rank,perms)
+	else
+		self:broadcast("No privilege was revoked from rank "..rank..".")
+	end
+    factions.save()
+end
+
+function factions.Faction.add_privs(self, rank, perms)
+	local added = false
+	local p = self.ranks[rank]
+	for index, perm in pairs(perms) do
+		if not table_Contains(p,perm) then
+			added = true
+			table.insert(p,perm)
+		end
+	end
+	self.ranks[rank] = p
+	if added then
+		self:on_add_privs(rank,perms)
+	else
+		self:broadcast("The rank "..rank.." already has these privileges.")
+	end
+    factions.save()
+end
+
+function factions.Faction.set_rank_name(self, oldrank, newrank)
+	local copyrank = self.ranks[oldrank]
+	self.ranks[newrank] = copyrank
+	self.ranks[oldrank] = nil
+	for player, r in pairs(self.players) do
+        if r == oldrank then
+            self.players[player] = newrank
+        end
+    end
+	if oldrank == self.default_leader_rank then
+		self.default_leader_rank = newrank
+		self:broadcast("The default leader rank has been set to "..newrank)
+	end
+	if oldrank == self.default_rank then
+		self.default_rank = newrank
+		self:broadcast("The default rank given to new players is set to "..newrank)
+	end
+    self:on_set_rank_name(oldrank, newrank)
+    factions.save()
+end
+
 --! @brief delete a rank and replace it
 --! @param rank the name of the rank to be deleted
 --! @param newrank the rank given to players who were previously "rank"
@@ -477,6 +639,14 @@ function factions.Faction.delete_rank(self, rank, newrank)
     end
     self.ranks[rank] = nil
     self:on_delete_rank(rank, newrank)
+	if rank == self.default_leader_rank then
+		self.default_leader_rank = newrank
+		self:broadcast("The default leader rank has been set to "..newrank)
+	end
+	if rank == self.default_rank then
+		self.default_rank = newrank
+		self:broadcast("The default rank given to new players is set to "..newrank)
+	end
     factions.save()
 end
 
@@ -564,6 +734,10 @@ function factions.Faction.on_create(self)  --! @brief called when the faction is
     minetest.chat_send_all("Faction "..self.name.." has been created.")
 end
 
+function factions.Faction.on_set_name(self,oldname)
+    minetest.chat_send_all("Faction "..oldname.." changed its name to "..self.name..".")
+end
+
 function factions.Faction.on_player_leave(self, player)
     self:broadcast(player.." has left this faction.")
 end
@@ -616,12 +790,44 @@ function factions.Faction.on_end_alliance(self, faction)
     self:broadcast("This faction is no longer allied with "..faction.."!")
 end
 
+function factions.Faction.on_new_neutral(self, faction)
+    self:broadcast("This faction is now neutral with "..faction)
+end
+
+function factions.Faction.on_end_neutral(self, faction)
+    self:broadcast("This faction is no longer neutral with "..faction.."!")
+end
+
+function factions.Faction.on_new_enemy(self, faction)
+    self:broadcast("This faction is now at war with "..faction)
+end
+
+function factions.Faction.on_end_enemy(self, faction)
+    self:broadcast("This faction is no longer at war with "..faction.."!")
+end
+
 function factions.Faction.on_set_spawn(self)
     self:broadcast("The faction spawn has been set to ("..util.coords3D_string(self.spawn)..").")
 end
 
 function factions.Faction.on_add_rank(self, rank)
     self:broadcast("The rank "..rank.." has been created with privileges: "..table.concat(self.ranks[rank], ", "))
+end
+
+function factions.Faction.on_replace_privs(self, rank)
+    self:broadcast("The privileges in rank "..rank.." have been delete and changed to: "..table.concat(self.ranks[rank], ", "))
+end
+
+function factions.Faction.on_remove_privs(self, rank,privs)
+    self:broadcast("The privileges ("..table.concat(privs, ", ")..")".." in rank "..rank.." have been revoked: ")
+end
+
+function factions.Faction.on_add_privs(self, rank,privs)
+	self:broadcast("The privileges ("..table.concat(privs, ", ")..")".." in rank "..rank.." have been added: ")
+end
+
+function factions.Faction.on_set_rank_name(self, rank,newrank)
+    self:broadcast("The name of rank "..rank.." has been changed to "..newrank)
 end
 
 function factions.Faction.on_delete_rank(self, rank, newrank)
@@ -784,6 +990,13 @@ function factions.load()
             if not faction.last_logon then
                 faction.last_logon = os.time()
             end
+			if not faction.request_inbox then
+				faction.request_inbox = {}
+			end
+			if not faction.neutral then
+				faction.neutral = {}
+			end
+			factions.start_diplomacy(facname,faction)
         end
         file:close()
     end
@@ -978,18 +1191,28 @@ function(player)
         faction.last_logon = os.time()
 		createHudFactionName(player,faction.name)
 		createHudPower(player,faction)
+		if faction:has_permission(name,"diplomacy") then
+			for _ in pairs(faction.request_inbox) do minetest.chat_send_player(name,"You have diplomatic requests in the inbox.") break end
+		end
     end
 
     local pos = player:get_pos()
 
     local parcel_faction = factions.get_faction_at(pos)
 	-- Login-Time-Stamp
+	
 	local key = "LTS:"..name
 	local value = storage:get_int(key)
+	local facname = ""
+	
+	if faction then
+		facname = faction.name
+	end
+	
 	-- 300 seconds = 5 minutes
 	-- Kill unstamped players.
     if parcel_faction and parcel_faction.is_admin == false and (value == 0 or os.time() - value >= 300) then
-        if not faction or parcel_faction.name ~= faction.name then
+        if (not faction or parcel_faction.name ~= facname) and parcel_faction.enemies[facname] then
             minetest.after(1, function()
                 if player then
                     player:set_hp(0)
@@ -997,11 +1220,7 @@ function(player)
             end)
         end
     end
-	if value == 0 then
-		local v = os.time()
-		storage:set_int(key,v)
-		value = v
-	end
+	storage:set_int(key,os.time())
 end
 )
 
@@ -1070,7 +1289,9 @@ minetest.is_protected = function(pos, player)
     elseif player_faction then
         if parcel_faction.name == player_faction.name then
             return not parcel_faction:has_permission(player, "build")
-        else
+        elseif parcel_faction.allies[player_faction.name] then
+			return not player_faction:has_permission(player, "build")
+		else
             return not parcel_faction:parcel_is_attacked_by(parcelpos, player_faction)
         end
     else
