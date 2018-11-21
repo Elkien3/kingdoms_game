@@ -340,7 +340,7 @@ end
 function factions.Faction.can_claim_parcel(self, parcelpos)
     local fac = factions.parcels[parcelpos]
     if fac then
-        if factions.factions[fac].power < 0. and self.power >= factions.power_per_parcel then
+        if factions.factions[fac].power < 0. and self.power >= factions.power_per_parcel and self.enemies[fac.name] then
             return true
         else
             return false
@@ -1212,7 +1212,7 @@ function(player)
 	-- 300 seconds = 5 minutes
 	-- Kill unstamped players.
     if parcel_faction and parcel_faction.is_admin == false and (value == 0 or os.time() - value >= 300) then
-        if (not faction or parcel_faction.name ~= facname) and parcel_faction.enemies[facname] then
+        if (not faction or parcel_faction.name ~= facname) and (facname == "" or parcel_faction.enemies[facname]) then
             minetest.after(1, function()
                 if player then
                     player:set_hp(0)
