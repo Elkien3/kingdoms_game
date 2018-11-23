@@ -93,11 +93,11 @@ minetest.register_craftitem("factions:siege_banner", {
 
         local meta = minetest.get_meta(pointed_thing.above)
 
-		meta:set_int("stage",0)
+		meta:set_int("stage",1)
         meta:set_string("attacking_faction", attacking_faction.name)
         meta:set_string("defending_faction", defending_faction.name)
             
-        minetest.get_meta(pointed_thing.above):set_string("infotext", "Siege Banner 1/4 (" .. attacking_faction.name .. " vs " .. defending_faction.name .. ")")
+        meta:set_string("infotext", "Siege Banner 1/4 (" .. attacking_faction.name .. " vs " .. defending_faction.name .. ")")
 
         return "" 
     end
@@ -125,7 +125,7 @@ minetest.register_node("factions:siege_banner_sieging", {
 		stage = stage + 1
 
 		if stage <= siege_banner_stages then
-			minetest.get_meta(pos):set_string("infotext", "Siege Banner " .. stage .. "/" .. siege_banner_stages .. " (" .. att_fac_name .. " vs " .. def_fac_name .. ")")
+			meta:set_string("infotext", "Siege Banner " .. stage .. "/" .. siege_banner_stages .. " (" .. att_fac_name .. " vs " .. def_fac_name .. ")")
 			factions.get_faction(def_fac_name):broadcast("Your parcel at " .. format_pos(pos) .. " is being sieged (" .. stage .. "/" .. siege_banner_stages .. ")")
 			meta:set_int("stage",stage)
 			meta:set_string("attacking_faction", att_fac_name)
