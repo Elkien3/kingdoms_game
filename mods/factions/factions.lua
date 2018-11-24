@@ -141,6 +141,7 @@ function factions.start_diplomacy(name,faction)
 	for i,fac in pairs(factions.factions) do
 		if i ~= name and not (faction.neutral[i] or faction.allies[i] or faction.enemies[i]) then
 			faction:new_enemy(i)
+			fac:new_enemy(name)
 		end
 	end
 end
@@ -992,11 +993,19 @@ function factions.load()
 			if not faction.request_inbox then
 				faction.request_inbox = {}
 			end
+			if not faction.enemies then
+				faction.enemies = {}
+			end
 			if not faction.neutral then
 				faction.neutral = {}
 			end
-			factions.start_diplomacy(facname,faction)
+			if not faction.allies then
+				faction.allies = {}
+			end
         end
+		for facname, faction in pairs(factions.factions) do
+			factions.start_diplomacy(facname,faction)
+		end
         file:close()
     end
 end
