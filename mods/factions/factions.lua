@@ -141,7 +141,6 @@ function factions.start_diplomacy(name,faction)
 	for i,fac in pairs(factions.factions) do
 		if i ~= name and not (faction.neutral[i] or faction.allies[i] or faction.enemies[i]) then
 			faction:new_enemy(i)
-			fac:new_enemy(name)
 		end
 	end
 end
