@@ -566,15 +566,15 @@ factions.register_command("refuse", {
 	end
 },false)
 
-factions.register_command("delcare_war", {
-	description = "Delcare war on a faction.",
+factions.register_command("declare_war", {
+	description = "Declare war on a faction.",
 	--global_privileges = {"faction_user"},
 	format = {"string"},
 	faction_permissions = {"diplomacy"},
 	on_success = function(player, faction, pos, parcelpos, args)
 		if not faction.enemies[args.strings[1]] then
 			if args.strings[1] == faction.name then
-				send_error(player, "You can not delcare war on your own faction.")
+				send_error(player, "You can not declare war on your own faction.")
 				return false
 			end
 			if faction.allies[args.strings[1]] then
